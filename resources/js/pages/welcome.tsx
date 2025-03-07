@@ -30,7 +30,7 @@ export default function Welcome() {
                                     href={route('dashboard')}
                                     className="px-3 py-1 rounded bg-purple-600 hover:bg-purple-700 transition"
                                 >
-                                    Dashboard
+                                    Panel de Control
                                 </Link>
                             ) : (
                                 <>
