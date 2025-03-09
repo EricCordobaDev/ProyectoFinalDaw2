@@ -45,8 +45,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <Label htmlFor="email">Correo electrónico</Label>
                         <Input
                             id="email"
-                            type="email"
-                            required
+                            type="email"                            
                             autoFocus
                             tabIndex={1}
                             autoComplete="email"
@@ -68,8 +67,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         </div>
                         <Input
                             id="password"
-                            type="password"
-                            required
+                            type="password"                            
                             tabIndex={2}
                             autoComplete="current-password"
                             value={data.password}

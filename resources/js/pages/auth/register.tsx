@@ -40,8 +40,7 @@ export default function Register() {
                         <Label htmlFor="name">Nombre</Label>
                         <Input
                             id="name"
-                            type="text"
-                            required
+                            type="text"                            
                             autoFocus
                             tabIndex={1}
                             autoComplete="name"
@@ -57,8 +56,7 @@ export default function Register() {
                         <Label htmlFor="email">Correo electrónico</Label>
                         <Input
                             id="email"
-                            type="email"
-                            required
+                            type="email"                            
                             tabIndex={2}
                             autoComplete="email"
                             value={data.email}
@@ -73,8 +71,7 @@ export default function Register() {
                         <Label htmlFor="password">Contraseña</Label>
                         <Input
                             id="password"
-                            type="password"
-                            required
+                            type="password"                            
                             tabIndex={3}
                             autoComplete="new-password"
                             value={data.password}
@@ -89,8 +86,7 @@ export default function Register() {
                         <Label htmlFor="password_confirmation">Confirmar contraseña</Label>
                         <Input
                             id="password_confirmation"
-                            type="password"
-                            required
+                            type="password"                            
                             tabIndex={4}
                             autoComplete="new-password"
                             value={data.password_confirmation}
