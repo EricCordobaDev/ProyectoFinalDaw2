@@ -17,12 +17,7 @@ class Videojuego extends Model
         'fecha_lanzamiento',
         'metacritic',
         'datos_json'
-    ];
-    
-    protected $casts = [
-        'fecha_lanzamiento' => 'date',
-        'rating' => 'float',
-        'metacritic' => 'integer'
-    ];
+    ];    
+   
 
 }

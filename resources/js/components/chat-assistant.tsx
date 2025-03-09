@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent, useRef } from 'react';
-import { HfInference } from "https://cdn.skypack.dev/@huggingface/inference"
+import { HfInference } from "https://cdn.skypack.dev/@huggingface/inference";
 
 // Initialize the Hugging Face Inference client
 const client = new HfInference("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");
