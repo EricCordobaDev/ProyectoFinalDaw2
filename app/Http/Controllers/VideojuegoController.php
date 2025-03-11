@@ -14,23 +14,14 @@ class VideojuegoController extends Controller
           $this->videojuegoService = $videojuegoService;
      }
      public function mostrarVideojuegos()
-     {
-          $currentPage = request()->get('page', 1);
-          $perPage = 20;
+     {              
 
-          
-
-          // Primero, obtenemos y guardamos los juegos de la API
-          //$this->videojuegoService->fetchAndSaveGames();
-
+        
           // Luego, obtenemos los juegos de la base de datos con paginación
-          $juegos = $this->videojuegoService->getGames($currentPage, $perPage);
+          $juegos = $this->videojuegoService->fetchGamesFromApi();
 
-          return inertia('videojuegos', [
-               'juegos' => $juegos->items(),
-               'currentPage' => $juegos->currentPage(),
-               'totalPages' => $juegos->lastPage(),
-               
+          return inertia('games', [
+              
           ]);
      }
 
