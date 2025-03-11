@@ -14,7 +14,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('videojuegos', [VideojuegoController::class, 'mostrarVideojuegos'])->name('videojuegos');
+Route::get('games', [VideojuegoController::class, 'mostrarVideojuegos'])->name('games');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -19,53 +19,56 @@ class VideojuegoService
      
 
      /**
-      * Obtiene juegos desde la API sin guardarlos
+      * Obtiene juegos desde la API paginados
+      * @param int $page Número de página a recuperar
+      * @param int $pageSize Número de elementos por página
+      * @return array Con los juegos y metadatos de paginación
       */
-     public function fetchGamesFromApi()
-     {
-          set_time_limit(0); 
-          $allGames = [];
-          $url = 'https://api.rawg.io/api/games';
-          $params = [
-               'key' => '915e17cf3f9c485bab6bf3bda733f6eb',
-               'metacritic' => '70,100',               
-               'page_size' => 20,
-               'ordering' => '-fecha_lanzamiento', 
-          ];
-
+      public function fetchGamesFromApi($page = 1, $pageSize = 40)
+      {
           try {
-               do {
-                    $response = $this->client->get($url, ['query' => $params]);
-                    $data = json_decode($response->getBody()->getContents(), true);
-
-                    // Acumular juegos
-                    $allGames = array_merge($allGames, $data['results']);
-
-                    // Actualizar URL y parámetros para la siguiente página
-                    $nextUrl = $data['next'];
-                    if ($nextUrl) {
-                         $parsedUrl = parse_url($nextUrl);
-                         parse_str($parsedUrl['query'], $queryParams);
-                         $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
-                         $params = $queryParams;
-                    }
-               } while ($nextUrl);
-
-               return [
-                    'juegos' => $allGames,
-                    'count' => count($allGames),
-                    'next' => null,
-                    'previous' => null,
-               ];
+              set_time_limit(0); 
+              $url = 'https://api.rawg.io/api/games';
+              $params = [
+                  'key' => '915e17cf3f9c485bab6bf3bda733f6eb',
+                  'metacritic' => '50,100',           
+                  'page_size' => $pageSize,
+                  'page' => $page,                  
+                  'ordering' => '-released',                   
+              ];
+              
+              $response = $this->client->request('GET', $url, [
+                  'query' => $params,
+                  'timeout' => 30, // Tiempo máximo de espera
+              ]);
+      
+              $data = json_decode($response->getBody(), true);
+              
+              if (!isset($data['results'])) {
+                  Log::error('API no devolvió resultados esperados', ['response' => $data]);
+                  return ['games' => [], 'pagination' => ['count' => 0, 'current_page' => $page, 'page_size' => $pageSize, 'total_pages' => 0]];
+              }
+              
+              
+              return [
+                  'games' => $data['results'] ?? [],
+                  'pagination' => [
+                      'count' => $data['count'] ?? 0,
+                      'next' => $data['next'] ?? null,
+                      'previous' => $data['previous'] ?? null,
+                      'current_page' => $page,
+                      'page_size' => $pageSize,
+                      'total_pages' => ceil(($data['count'] ?? 0) / $pageSize),
+                  ]
+              ];
           } catch (\Exception $e) {
-               Log::error('Error al obtener juegos de la API: ' . $e->getMessage());
-               return [
-                    'juegos' => [],
-                    'count' => 0,
-                    'next' => null,
-                    'previous' => null
-               ];
+              Log::error('Error al obtener datos de la API de juegos', [
+                  'error' => $e->getMessage(),
+                  'page' => $page,
+                  'pageSize' => $pageSize
+              ]);
+              
+              return ['games' => [], 'pagination' => ['count' => 0, 'current_page' => $page, 'page_size' => $pageSize, 'total_pages' => 0]];
           }
-     }
-     
+      }
 }
