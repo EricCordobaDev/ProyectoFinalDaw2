@@ -12,12 +12,7 @@ const mainNavItems: NavItem[] = [
         title: 'Inicio',
         url: '/dashboard',
         icon: Home,
-    },   
-    {
-        title: 'Mensajes',
-        url: '/messages',
-        icon: MessageSquare,
-    },   
+    },      
     {
         title: 'Videojuegos',
         url: '/games',

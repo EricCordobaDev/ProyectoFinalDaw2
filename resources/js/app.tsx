@@ -10,7 +10,7 @@ declare global {
     const route: typeof routeFn;
 }
 
-const appName = 'Project';
+const appName = 'Social';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

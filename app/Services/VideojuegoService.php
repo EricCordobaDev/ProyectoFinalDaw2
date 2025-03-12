@@ -16,59 +16,69 @@ class VideojuegoService
                'verify' => false,
           ]);
      }
-     
+
 
      /**
-      * Obtiene juegos desde la API paginados
-      * @param int $page Número de página a recuperar
-      * @param int $pageSize Número de elementos por página
-      * @return array Con los juegos y metadatos de paginación
-      */
-      public function fetchGamesFromApi($page = 1, $pageSize = 40)
-      {
-          try {
-              set_time_limit(0); 
-              $url = 'https://api.rawg.io/api/games';
-              $params = [
-                  'key' => '915e17cf3f9c485bab6bf3bda733f6eb',
-                  'metacritic' => '50,100',           
-                  'page_size' => $pageSize,
-                  'page' => $page,                  
-                  'ordering' => '-released',                   
-              ];
-              
-              $response = $this->client->request('GET', $url, [
-                  'query' => $params,
-                  'timeout' => 30, // Tiempo máximo de espera
-              ]);
-      
-              $data = json_decode($response->getBody(), true);
-              
-              if (!isset($data['results'])) {
-                  Log::error('API no devolvió resultados esperados', ['response' => $data]);
-                  return ['games' => [], 'pagination' => ['count' => 0, 'current_page' => $page, 'page_size' => $pageSize, 'total_pages' => 0]];
-              }
-              
-              
-              return [
-                  'games' => $data['results'] ?? [],
-                  'pagination' => [
-                      'count' => $data['count'] ?? 0,
-                      'next' => $data['next'] ?? null,
-                      'previous' => $data['previous'] ?? null,
-                      'current_page' => $page,
-                      'page_size' => $pageSize,
-                      'total_pages' => ceil(($data['count'] ?? 0) / $pageSize),
-                  ]
-              ];
-          } catch (\Exception $e) {
-              Log::error('Error al obtener datos de la API de juegos', [
-                  'error' => $e->getMessage(),
-                  'page' => $page,
-                  'pageSize' => $pageSize
-              ]);
-              
-              return ['games' => [], 'pagination' => ['count' => 0, 'current_page' => $page, 'page_size' => $pageSize, 'total_pages' => 0]];
-          }
-      }
+ * Obtiene juegos desde la API
+ * @param int $page Número de página a recuperar (0 para todas las páginas)
+ * @param int $pageSize Número de elementos por página
+ * @return array Con los juegos y metadatos de paginación
+ */
+/**
+ * Obtiene juegos desde la API RAWG
+ * @param int $page Número de página a recuperar (1 por defecto)
+ * @param int $pageSize Número de elementos por página (20 por defecto)
+ * @return array Con los juegos y metadatos de paginación
+ */
+public function recogerJuegosApi(int $page = 1, int $pageSize = 20)
+{
+    $url = 'https://api.rawg.io/api/games';
+    $params = [
+        'key' => '915e17cf3f9c485bab6bf3bda733f6eb',
+        'metacritic' => '40,100',
+        'page_size' => $pageSize,
+        'page' => $page, 
+        'ordering' => '-released',       
+    ];  
+    
+    try {
+        // Realizar la petición GET a la API
+        $response = $this->client->request('GET', $url, [
+            'query' => $params
+        ]);
+        
+        // Decodificar la respuesta JSON
+        $data = json_decode($response->getBody()->getContents(), true);
+        
+        return [
+            'games' => $data['results'] ?? [],
+            'total' => $data['count'] ?? 0,
+            'next_page' => !empty($data['next']) ? $page + 1 : null,
+            'prev_page' => !empty($data['previous']) ? $page - 1 : null,
+        ];
+    } catch (\Exception $e) {
+        // Registrar el error y devolver un array vacío
+        Log::error('Error al obtener juegos de la API: ' . $e->getMessage());
+        return [
+            'games' => [],
+            'total' => 0,
+            'next_page' => null,
+            'prev_page' => null,
+        ];
+    }
+}
+
+public function recogerTodosLosJuegos()
+{
+    $allGames = [];
+    $page = 1;
+
+    do {
+        $resultado = $this->recogerJuegosApi($page);
+        $allGames = array_merge($allGames, $resultado['games']);
+        $page = $resultado['next_page'];
+    } while ($page !== null);
+
+    return $allGames;
+}
 }
