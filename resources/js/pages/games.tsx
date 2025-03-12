@@ -27,7 +27,7 @@ export default function Games({ juegos = [], paginacion = null }: { juegos: Game
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
            <Head title="Videojuegos">
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+                <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="text-2xl font-bold mb-6">Catálogo de Videojuegos</h1>

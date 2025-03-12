@@ -16,8 +16,8 @@ return new class extends Migration {
                     ->constrained('users')
                     ->onDelete('cascade');
                $table->integer('likes')->default(0);
-               $table->text('contenido');
-               $table->string('imagen')->nullable();
+               $table->text('content');
+               $table->string('image')->nullable();
                $table->dateTime('post_date')->default(now());
 
                $table->timestamps();

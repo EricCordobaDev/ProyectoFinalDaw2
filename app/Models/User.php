@@ -17,17 +17,23 @@ class User extends Authenticatable
       *
       * @var list<string>
       */
-     protected $fillable = [         
-          'name',         
+     protected $fillable = [
+          'name',
           'birthdate',
           'phone',
           'email',
-          'password',         
+          'password',
      ];
 
      public function posts()
      {
           return $this->hasMany(Post::class, 'usuario_id');
+     }
+     // Un usuario puede tener muchos juegos (relación muchos a muchos)
+     public function games()
+     {
+
+          return $this->belongsToMany(Game::class);
      }
 
      /**

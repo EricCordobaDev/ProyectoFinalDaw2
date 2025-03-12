@@ -15,7 +15,7 @@ export default function Dashboard() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
            <Head title="Inicio">
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+                <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use App\Services\VideojuegoService;
 use Illuminate\Http\Request;
 
@@ -14,13 +15,40 @@ class VideojuegoController extends Controller
           $this->videojuegoService = $videojuegoService;
      }
      
+
      public function mostrarVideojuegos(Request $request)
+     {
+         $page = $request->input('page', 1);
+         $pageSize = $request->input('page_size', 20);      
+        
+         $juegos = Game::paginate($pageSize);
+         
+         return inertia('games', [
+             'juegos' => $juegos->items(),
+             'paginacion' => [
+                 'current_page' => $juegos->currentPage(),
+                 'total_pages' => $juegos->lastPage(),
+                 'total' => $juegos->total()
+             ]           
+         ]);
+     }
+
+     /**
+      * Summary of guardar
+      * @param \Illuminate\Http\Request $request
+      * @return \Inertia\Response|\Inertia\ResponseFactory
+      */
+     public function guardar(Request $request)
      {              
           $page = $request->input('page', 1);
           $pageSize = $request->input('page_size', 20);
           
           // Obtenemos los juegos de la API con paginación
           $resultado = $this->videojuegoService->recogerJuegosApi($page, $pageSize);
+
+
+          $this->videojuegoService->guardarJuegos($resultado['games']);
+        
 
           // Calcular el número total de páginas
           $totalPages = ceil($resultado['total'] / $pageSize);
@@ -29,9 +57,7 @@ class VideojuegoController extends Controller
                'juegos' => $resultado['games'],
                'paginacion' => [
                     'current_page' => (int)$page,
-                    'total_pages' => $totalPages,
-                    'has_next_page' => $resultado['next_page'] !== null,
-                    'has_prev_page' => $resultado['prev_page'] !== null,
+                    'total_pages' => $totalPages,                    
                ]           
           ]);
      }

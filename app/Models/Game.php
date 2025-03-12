@@ -9,7 +9,7 @@ class Game extends Model
      protected $table = 'games';
      
      protected $fillable = [
-          'id',
+          'idApi',
           'name',
           'released',
           'background_image',
@@ -26,4 +26,12 @@ class Game extends Model
           'platforms' => 'array',
           'genres' => 'array',          
      ];
+
+     /**
+      * Los usuarios tienen muchos juegos (relación muchos a muchos)
+      */
+     public function users()
+     {
+          return $this->belongsToMany(User::class);
+     }
 }
