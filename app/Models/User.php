@@ -32,8 +32,15 @@ class User extends Authenticatable
      // Un usuario puede tener muchos juegos (relación muchos a muchos)
      public function games()
      {
-
           return $this->belongsToMany(Game::class);
+     }
+
+     /**
+      * Posts que le gustan a este usuario
+      */
+     public function likedPosts()
+     {
+          return $this->belongsToMany(Post::class, 'post_likes', 'user_id', 'post_id')->withTimestamps();
      }
 
      /**
