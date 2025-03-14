@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
@@ -15,19 +16,26 @@ class Post extends Model
         'usuario_id',
         'likes',
         'content',
-        'image',
-        'post_date',
-    ];
-
-    protected $casts = [
-        'post_date' => 'datetime',
-    ];
+        'image',        
+    ]; 
 
     protected $appends = ['image_url'];
 
     public function getImageUrlAttribute()
     {
         return $this->image ? Storage::disk('public')->url($this->image) : null;
+    }
+
+    public function saveImage(UploadedFile $file)
+    {
+        // Si ya hay una imagen, eliminarla
+        if ($this->image) {
+            Storage::disk('public')->delete($this->image);
+        }
+        
+        // Guardar la nueva imagen
+        $path = $file->store('posts', 'public');
+        $this->update(['image' => $path]);
     }
 
     public function user()

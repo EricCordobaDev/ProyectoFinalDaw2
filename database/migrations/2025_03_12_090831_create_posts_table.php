@@ -18,7 +18,6 @@ return new class extends Migration {
                $table->integer('likes')->default(0);
                $table->text('content');
                $table->string('image')->nullable();
-               $table->dateTime('post_date')->default(now());
 
                $table->timestamps();
           });
