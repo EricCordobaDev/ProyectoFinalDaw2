@@ -27,8 +27,7 @@ class VideojuegoService
           $url = 'https://api.rawg.io/api/games';
           $params = [
                'key' => '915e17cf3f9c485bab6bf3bda733f6eb',
-               'metacritic' => '40,100',
-               'rating' => '1,5',
+               'metacritic' => '1,100',               
                'page_size' => $pageSize,
                'page' => $page,
                'ordering' => '-released',
@@ -77,8 +76,12 @@ class VideojuegoService
                          'released' => $juego['released'] ?? null,
                          'rating' => $juego['rating'] ?? 0,
                          'metacritic' => $juego['metacritic'] ?? 0,
-                         'platforms' => $this->extractPlatforms($gameData['platforms'] ?? []),
-                         'genres' => $this->extractGenres($gameData['genres'] ?? []),
+                         'platforms' => isset($juego['platforms']) ? json_encode(array_map(function ($platform) {
+                              return $platform['platform']['name'];
+                         }, $juego['platforms'])) : null,
+                         'genres' => isset($juego['genres']) ? json_encode(array_map(function ($genre) {
+                              return $genre['name'];
+                         }, $juego['genres'])) : null,
                     ];
 
                     if ($existente) {
@@ -102,39 +105,6 @@ class VideojuegoService
                'detalles' => $detalles
           ];
      }
-
-     private function extractPlatforms($platforms)
-     {
-          $result = [];
-          foreach ($platforms as $platform) {
-               if (isset($platform['platform']['id']) && isset($platform['platform']['name'])) {
-                    $result[] = [
-                         'id' => $platform['platform']['id'],
-                         'name' => $platform['platform']['name']
-                    ];
-               }
-          }
-          return $result;
-     }
-
-     /**
-      * Extrae la información relevante de los géneros
-      * @param array $genres Géneros desde la API
-      * @return array Datos procesados de géneros
-      */
-     private function extractGenres($genres)
-     {
-          $result = [];
-          foreach ($genres as $genre) {
-               if (isset($genre['id']) && isset($genre['name'])) {
-                    $result[] = [
-                         'id' => $genre['id'],
-                         'name' => $genre['name']
-                    ];
-               }
-          }
-          return $result;
-     }
-
+    
 
 }

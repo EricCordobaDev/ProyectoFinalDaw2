@@ -146,6 +146,7 @@ export default function Games({
                     </div>
                 )}
                 
+                {/* Paginacion */}
                 {paginacion && searchInput === '' && (
                     <div className="flex justify-center mt-8">
                         <nav className="flex items-center gap-2">
