@@ -20,6 +20,11 @@ class VideojuegoController extends Controller
      {
          $page = $request->input('page', 1);
          $pageSize = $request->input('page_size', 20);      
+         $searchTerm = $request->input('search', '');
+         
+         if (!empty($searchTerm)) {
+             return $this->buscarVideojuegos($request);
+         }
         
          $juegos = Game::paginate($pageSize);
          
@@ -29,7 +34,32 @@ class VideojuegoController extends Controller
                  'current_page' => $juegos->currentPage(),
                  'total_pages' => $juegos->lastPage(),
                  'total' => $juegos->total()
-             ]           
+             ],
+             'searchTerm' => $searchTerm           
+         ]);
+     }
+
+     /**
+      * Busca videojuegos en toda la base de datos
+      * @param Request $request
+      * @return \Inertia\Response|\Inertia\ResponseFactory
+      */
+     public function buscarVideojuegos(Request $request)
+     {
+         $searchTerm = $request->input('search', '');
+         $pageSize = $request->input('page_size', 100); // Aumentamos el tamaño por defecto para búsquedas
+         
+         // Buscar en todos los juegos, independientemente de la paginación
+         $juegos = Game::where('name', 'like', '%' . $searchTerm . '%')->paginate($pageSize);
+         
+         return inertia('games', [
+             'juegos' => $juegos->items(),
+             'paginacion' => [
+                 'current_page' => $juegos->currentPage(),
+                 'total_pages' => $juegos->lastPage(),
+                 'total' => $juegos->total()
+             ],
+             'searchTerm' => $searchTerm
          ]);
      }
 

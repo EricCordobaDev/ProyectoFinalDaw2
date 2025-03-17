@@ -1,7 +1,9 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import AiChatBot from '@/components/chat-assistant';
+import { useState, useEffect } from 'react';
+import { debounce } from 'lodash';
 
 interface Game {
     id: number;
@@ -23,7 +25,46 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Games({ juegos = [], paginacion = null }: { juegos: Game[], paginacion: Pagination | null }) {
+export default function Games({ 
+    juegos = [], 
+    paginacion = null,
+    searchTerm = ''
+}: { 
+    juegos: Game[], 
+    paginacion: Pagination | null,
+    searchTerm?: string
+}) {
+    const [searchInput, setSearchInput] = useState(searchTerm);
+    
+    // Función para realizar la búsqueda
+    const performSearch = debounce((term: string) => {
+        router.get('/games', { search: term }, {
+            preserveState: true,
+            replace: true,
+        });
+    }, 500);
+    
+    // Efecto para actualizar el estado inicial cuando cambian props
+    useEffect(() => {
+        setSearchInput(searchTerm);
+    }, [searchTerm]);
+    
+    // Manejador para cambios en el input de búsqueda
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newTerm = e.target.value;
+        setSearchInput(newTerm);
+        performSearch(newTerm);
+    };
+    
+    // Manejador para limpiar la búsqueda
+    const clearSearch = () => {
+        setSearchInput('');
+        router.get('/games', {}, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
            <Head title="Videojuegos">
@@ -32,9 +73,39 @@ export default function Games({ juegos = [], paginacion = null }: { juegos: Game
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="text-2xl font-bold mb-6">Catálogo de Videojuegos</h1>
                 
+                {/* Buscador que envía la búsqueda al servidor */}
+                <div className="mb-6">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={searchInput}
+                            onChange={handleSearchChange}
+                            placeholder="Buscar videojuego..."
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                        />
+                        {searchInput && (
+                            <button 
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+                    {searchInput.length > 0 && (
+                        <p className="mt-2 text-sm text-gray-500">
+                            {juegos.length} resultado(s) encontrado(s) para "{searchInput}"
+                        </p>
+                    )}
+                </div>
+                
                 {juegos.length === 0 ? (
                     <div className="text-center py-10">
-                        <p className="text-gray-500">No se encontraron videojuegos disponibles</p>
+                        <p className="text-gray-500">
+                            {searchInput.length > 0 
+                                ? `No se encontraron videojuegos con "${searchInput}"` 
+                                : "No se encontraron videojuegos disponibles"}
+                        </p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -75,7 +146,7 @@ export default function Games({ juegos = [], paginacion = null }: { juegos: Game
                     </div>
                 )}
                 
-                {paginacion && (
+                {paginacion && searchInput === '' && (
                     <div className="flex justify-center mt-8">
                         <nav className="flex items-center gap-2">
                             {paginacion.current_page > 1 && (
