@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Services\VideojuegoService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class VideojuegoController extends Controller
@@ -20,12 +21,8 @@ class VideojuegoController extends Controller
      {
          $page = $request->input('page', 1);
          $pageSize = $request->input('page_size', 20);      
-         $searchTerm = $request->input('search', '');
+         $searchTerm = $request->input('search', '');         
          
-         if (!empty($searchTerm)) {
-             return $this->buscarVideojuegos($request);
-         }
-        
          $juegos = Game::paginate($pageSize);
          
          return inertia('games', [
@@ -40,29 +37,22 @@ class VideojuegoController extends Controller
      }
 
      /**
-      * Busca videojuegos en toda la base de datos
-      * @param Request $request
-      * @return \Inertia\Response|\Inertia\ResponseFactory
-      */
-     public function buscarVideojuegos(Request $request)
-     {
-         $searchTerm = $request->input('search', '');
-         $pageSize = $request->input('page_size', 100); // Aumentamos el tamaño por defecto para búsquedas
-         
-         // Buscar en todos los juegos, independientemente de la paginación
-         $juegos = Game::where('name', 'like', '%' . $searchTerm . '%')->paginate($pageSize);
-         
-         return inertia('games', [
-             'juegos' => $juegos->items(),
-             'paginacion' => [
-                 'current_page' => $juegos->currentPage(),
-                 'total_pages' => $juegos->lastPage(),
-                 'total' => $juegos->total()
-             ],
-             'searchTerm' => $searchTerm
-         ]);
-     }
-
+     * Guarda un juego en la biblioteca del usuario
+     */
+    public function saveGame($id)
+    {
+        $user = Auth::user();
+        $game = Game::findOrFail($id);
+        
+        // Comprueba si el juego ya está en la biblioteca del usuario
+        if (!$user->games()->where('game_id', $id)->exists()) {
+            $user->games()->attach($id);
+            return redirect()->back()->with('success', 'Juego añadido a tu biblioteca');
+        }
+        
+        return redirect()->back()->with('info', 'Este juego ya está en tu biblioteca');
+    }
+    
      /**
       * Summary of guardar
       * @param \Illuminate\Http\Request $request

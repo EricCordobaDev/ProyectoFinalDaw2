@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideojuegoController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('games', [VideojuegoController::class, 'mostrarVideojuegos'])->name('games');
+
+Route::post('/games/save/{id}', [VideojuegoController::class, 'saveGame'])->middleware(['auth'])->name('games.save');
+
+Route::delete('/user/games/{game}', [UserController::class, 'destroyGame'])
+    ->middleware(['auth'])
+    ->name('user.games.destroy');
+    
+Route::get('profile', [UserController::class, 'index'])->name('profile');
+
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

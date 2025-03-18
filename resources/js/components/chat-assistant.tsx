@@ -17,7 +17,7 @@ export default function ChatAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Add initial greeting message when component mounts
+    // Añadir un mensaje de bienvenida
     setMessages([
       {
         role: 'assistant',
@@ -27,7 +27,7 @@ export default function ChatAssistant() {
   }, []);
 
   useEffect(() => {
-    // Scroll to the bottom whenever messages update
+    // Scroll para abajo cuando se añaden nuevos mensajes
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 

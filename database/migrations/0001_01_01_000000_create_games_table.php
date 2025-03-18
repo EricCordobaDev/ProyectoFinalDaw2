@@ -21,7 +21,7 @@ return new class extends Migration {
                $table->json('platforms')->nullable();
                $table->json('genres')->nullable();
               
-               $table->timestamps();
+               
           });     
      }
 

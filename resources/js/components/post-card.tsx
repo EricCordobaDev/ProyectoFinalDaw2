@@ -2,10 +2,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { useInitials } from '@/hooks/use-initials';
-import { formatDistance } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Heart, Trash2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface PostCardProps {
   post: {
@@ -30,8 +30,7 @@ interface PostCardProps {
 export default function PostCard({ post, currentUserId, onDelete, onLike }: PostCardProps) {
   const getInitials = useInitials();
   const [isDeleting, setIsDeleting] = useState(false);
-  const isOwner = currentUserId === post.user.id;
-  const date = new Date(post.post_date || post.created_at);
+  const isOwner = currentUserId === post.user.id;  
   
   const handleDelete = async () => {
     if (isDeleting || !onDelete) return;
@@ -59,7 +58,7 @@ export default function PostCard({ post, currentUserId, onDelete, onLike }: Post
         <div className="flex flex-col">
           <p className="font-medium">{post.user.name}</p>
           <p className="text-xs text-muted-foreground">
-          {post.post_date}
+          {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
           </p>
         </div>
       </CardHeader>
@@ -82,17 +81,7 @@ export default function PostCard({ post, currentUserId, onDelete, onLike }: Post
             className={`h-4 w-4 ${post.liked_by_user ? 'fill-red-500 text-red-500' : ''}`} 
           />
           <span>{post.likes || 0}</span>
-        </Button>
-        {isOwner && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            <Trash2 className="h-4 w-4 text-red-500" />
-          </Button>
-        )}
+        </Button>       
       </CardFooter>
     </Card>
   );
