@@ -24,7 +24,8 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
-        email: auth.user.email,        
+        email: auth.user.email,
+        image: null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -50,13 +51,12 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 className="mt-1 block w-full"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
-                                required
                                 autoComplete="name"
                                 placeholder="Nombre de usuario"
                             />
 
                             <InputError className="mt-2" message={errors.name} />
-                        </div>                       
+                        </div>
 
                         <div className="grid gap-2">
                             <Label htmlFor="email">Correo electrónico</Label>
@@ -67,7 +67,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 className="mt-1 block w-full"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
-                                required
                                 autoComplete="username"
                                 placeholder="Correo electrónico"
                             />
@@ -75,6 +74,17 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <InputError className="mt-2" message={errors.email} />
                         </div>
 
+                        <div className="grid gap-2">
+                            <Label htmlFor="image">Foto de perfil</Label>
+                            <Input
+                                id="image"
+                                type="file"
+                                accept="image/*"
+                                className="file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold"
+                                onChange={(e) => setData('image', e.target.files)}
+                            />
+                            <InputError message={errors.image} className="mt-2" />
+                        </div>
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
                                 <p className="mt-2 text-sm text-neutral-800">

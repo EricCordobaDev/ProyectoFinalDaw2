@@ -3,7 +3,7 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Settings, Trash2, Star } from 'lucide-react';
+import { Settings, Star, Trash2 } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,7 +30,19 @@ export default function Profile() {
                 {/* Información del perfil */}
                 <div className="rounded-lg p-6">
                     <div className="mb-6 flex items-center justify-between">
-                        <h1 className="text-2xl font-bold">Perfil de {auth.user.name}</h1>
+                        <div className="flex items-center">
+                            <div className="mr-4 h-10 w-10 overflow-hidden rounded-full">
+                                {/*Si el usuario tiene foto de perfil */}
+                                {auth.user.image ? (
+                                    <img src={`/storage/${auth.user.image}`} alt={`${auth.user.name} avatar`} className="h-full w-full object-cover" />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                            </div>
+                            <h1 className="text-2xl font-bold">Perfil de {auth.user.name}</h1>
+                        </div>
                         <Link
                             className="flex items-center rounded-lg bg-gray-100 px-4 py-2 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
                             href={route('profile.edit')}
@@ -63,7 +75,7 @@ export default function Profile() {
                                             <span className="font-medium text-white">{game.rating}</span>
                                         </div>
                                     )}
-                                    
+
                                     <div className="h-48 overflow-hidden">
                                         {game.background_image ? (
                                             <img src={game.background_image} alt={game.name} className="h-full w-full object-cover" />
@@ -90,7 +102,7 @@ export default function Profile() {
                                                     {game.metacritic}
                                                 </div>
                                             )}
-                                            
+
                                             <button
                                                 onClick={() => handleDeleteGame(game.id)}
                                                 className="flex items-center rounded bg-red-50 px-3 py-1 text-sm text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 dark:bg-gray-700 dark:hover:bg-gray-600"

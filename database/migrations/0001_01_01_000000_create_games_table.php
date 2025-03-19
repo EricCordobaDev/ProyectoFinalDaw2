@@ -20,7 +20,7 @@ return new class extends Migration {
                $table->integer('metacritic')->nullable();
                $table->json('platforms')->nullable();
                $table->json('genres')->nullable();
-              
+               $table->timestamps();
                
           });     
      }

@@ -34,4 +34,12 @@ class Game extends Model
      {
           return $this->belongsToMany(User::class);
      }
+
+      /**
+      * Obtiene todas las reviews que tiene este juego
+      */
+     public function reviews()
+     {
+          return $this->hasMany(Review::class);
+     }
 }

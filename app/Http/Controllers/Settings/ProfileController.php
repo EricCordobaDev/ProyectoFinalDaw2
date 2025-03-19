@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -22,14 +23,16 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
             'auth' => [
-            'user' => array_merge($request->user()->toArray(), [
-                'games' => $request->user()->games
-            ])
-        ]
+                'user' => array_merge($request->user()->toArray(), [
+                    'games' => $request->user()->games,
+                    'profile_photo_url' => $request->user()->profile_photo_path ? 
+                        Storage::url($request->user()->profile_photo_path) : null
+                ])
+            ]
         ]);
     }
 
-    /**
+     /**
      * Update the user's profile settings.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
@@ -38,6 +41,18 @@ class ProfileController extends Controller
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+        }
+
+        // Procesar la imagen de perfil si se proporcionó una
+        if ($request->hasFile('image')) {
+            // Eliminar la foto anterior si existe
+            if ($request->user()->profile_photo_path) {
+                Storage::disk('public')->delete($request->user()->profile_photo_path);
+            }
+            
+            // Guardar la nueva imagen
+            $path = $request->file('image')->store('avatarImages', 'public');
+            $request->user()->profile_photo_path = $path;
         }
 
         $request->user()->save();

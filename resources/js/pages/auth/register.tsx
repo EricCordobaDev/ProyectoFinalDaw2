@@ -61,7 +61,7 @@ export default function Register() {
                               id="image"
                               type="file"
                               accept="image/*"
-                              tabIndex={2}
+                              tabIndex={2}                              
                               className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                               disabled={processing}
                               onChange={(e) => setData('image', e.target.files?.[0] || null)}

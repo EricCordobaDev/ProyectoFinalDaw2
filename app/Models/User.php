@@ -37,6 +37,14 @@ class User extends Authenticatable
      }
 
      /**
+      * Obtiene todas las reviews creadas por este usuario
+      */
+      public function reviews()
+      {
+           return $this->hasMany(Review::class);
+      }
+
+     /**
       * Posts que le gustan a este usuario
       */
      public function likedPosts()

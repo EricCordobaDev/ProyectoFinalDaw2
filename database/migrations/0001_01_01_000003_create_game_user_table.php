@@ -17,8 +17,7 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->foreignId('game_id')
                 ->constrained('games')
-                ->onDelete('cascade');
-            $table->timestamps();
+                ->onDelete('cascade');          
             
             // Para evitar duplicados de relaciones
             $table->unique(['user_id', 'game_id']);
