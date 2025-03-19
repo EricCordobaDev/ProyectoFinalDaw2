@@ -37,17 +37,21 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'required|string|max:1000',
-            'image' => 'nullable|image|max:2048', // Ahora validamos que sea un archivo de imagen de máximo 2MB
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $post = new Post();
         $post->usuario_id = Auth::id();
         $post->content = $request->content;
         
+        // Procesar la imagen solo si se ha subido una imagen
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts', 'public');
-            $post->image = $path;
-        }
+          $image = $request->file('image');
+          // Generar un nombre único para la imagen
+          $nombreImagen = time() . '.' . $image->getClientOriginalExtension();
+          // Guardar la imagen en el disco 'public' dentro de la carpeta 'images'
+          $post->image = $image->storeAs('postImages', $nombreImagen, 'public');
+     }
         
         $post->save();
 
@@ -56,55 +60,9 @@ class PostController extends Controller
         }
 
         return redirect()->back();
-    }
+    }  
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePostRequest $request, Post $post)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request, Post $post)
-    {
-        if (Auth::id() === $post->usuario_id) {
-            // Eliminar la imagen si existe
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            
-            $post->delete();
-            
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Post eliminado correctamente'
-                ]);
-            }
-        }
-        
-        return redirect()->back();
-    }
+    
 
     /**
      * Like a post

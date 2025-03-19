@@ -1,9 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { useInitials } from '@/hooks/use-initials';
 import { Heart } from 'lucide-react';
-import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -19,7 +16,7 @@ interface PostCardProps {
     user: {
       id: number;
       name: string;
-      avatar?: string;
+      image?: string;      
     };
   };
   currentUserId?: number;
@@ -27,21 +24,8 @@ interface PostCardProps {
   onLike?: (id: number) => void;
 }
 
-export default function PostCard({ post, currentUserId, onDelete, onLike }: PostCardProps) {
-  const getInitials = useInitials();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const isOwner = currentUserId === post.user.id;  
-  
-  const handleDelete = async () => {
-    if (isDeleting || !onDelete) return;
-    setIsDeleting(true);
-    
-    try {
-      onDelete(post.id);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+export default function PostCard({ post, onLike }: PostCardProps) {
+
   
   const handleLike = () => {
     if (!onLike) return;
@@ -51,23 +35,34 @@ export default function PostCard({ post, currentUserId, onDelete, onLike }: Post
   return (
     <Card className="mb-4 overflow-hidden">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={post.user.avatar} alt={post.user.name} />
-          <AvatarFallback>{getInitials(post.user.name)}</AvatarFallback>
-        </Avatar>
+        <div className="h-10 w-10 rounded-full overflow-hidden">
+           {/*Si el usuario tiene foto de perfil */}
+          {post.user.image ? (
+            <img 
+              src={`/storage/${post.user.image}`} 
+              alt={`${post.user.name} avatar`}
+              className="h-full w-full object-cover"
+            />            
+          ) : (
+               
+            <div className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-500">
+              {post.user.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
         <div className="flex flex-col">
           <p className="font-medium">{post.user.name}</p>
           <p className="text-xs text-muted-foreground">
-          {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
+            {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
           </p>
         </div>
       </CardHeader>
       <CardContent>
         <p className="whitespace-pre-line">{post.content}</p>
         {post.image && (
-          <div className="mt-3 rounded-md overflow-hidden">
-            <img src={post.image} alt="Post image" className="w-full h-auto object-cover" />
-          </div>
+            <div className="mt-3 rounded-md overflow-hidden max-w-md mx-auto">
+               <img src={`/storage/${post.image}`} className="w-full h-auto max-h-80 object-cover" />
+            </div>
         )}
       </CardContent>
       <CardFooter className="flex justify-between">

@@ -14,6 +14,7 @@ interface RegisterForm {
     email: string;
     password: string;
     password_confirmation: string;
+    image: File | null;
 }
 
 export default function Register() {
@@ -22,11 +23,13 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        image: null,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
+            forceFormData: true,
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -50,6 +53,20 @@ export default function Register() {
                             placeholder="Nombre de usuario"
                         />
                         <InputError message={errors.name} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                         <Label htmlFor="image">Foto de perfil</Label>
+                         <Input
+                              id="image"
+                              type="file"
+                              accept="image/*"
+                              tabIndex={2}
+                              className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                              disabled={processing}
+                              onChange={(e) => setData('image', e.target.files?.[0] || null)}
+                         />
+                         <InputError message={errors.image} className="mt-2" />
                     </div>
 
                     <div className="grid gap-2">

@@ -17,26 +17,7 @@ class Post extends Model
         'likes',
         'content',
         'image',        
-    ]; 
-
-    protected $appends = ['image_url'];
-
-    public function getImageUrlAttribute()
-    {
-        return $this->image ? Storage::disk('public')->url($this->image) : null;
-    }
-
-    public function saveImage(UploadedFile $file)
-    {
-        // Si ya hay una imagen, eliminarla
-        if ($this->image) {
-            Storage::disk('public')->delete($this->image);
-        }
-        
-        // Guardar la nueva imagen
-        $path = $file->store('posts', 'public');
-        $this->update(['image' => $path]);
-    }
+    ];
 
     public function user()
     {

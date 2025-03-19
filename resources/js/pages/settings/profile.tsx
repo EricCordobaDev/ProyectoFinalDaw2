@@ -24,7 +24,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
-        email: auth.user.email,
+        email: auth.user.email,        
     });
 
     const submit: FormEventHandler = (e) => {
@@ -56,7 +56,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
 
                             <InputError className="mt-2" message={errors.name} />
-                        </div>
+                        </div>                       
 
                         <div className="grid gap-2">
                             <Label htmlFor="email">Correo electrónico</Label>
@@ -113,7 +113,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                     </form>
                 </div>
 
-               
                 <DeleteUser />
             </SettingsLayout>
         </AppLayout>
