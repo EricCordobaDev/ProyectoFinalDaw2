@@ -39,11 +39,11 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Información de perfil" description="Actualiza tu nombre y dirección de correo electrónico" />
+                    <HeadingSmall title="Información de perfil" description="Actualiza tu  y dirección de correo electrónico" />
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Nombre</Label>
+                            <Label htmlFor="name">Nombre de usuario</Label>
 
                             <Input
                                 id="name"
@@ -52,7 +52,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
-                                placeholder="Nombre completo"
+                                placeholder="Nombre de usuario"
                             />
 
                             <InputError className="mt-2" message={errors.name} />

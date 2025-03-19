@@ -23,7 +23,14 @@ class VideojuegoController extends Controller
          $pageSize = $request->input('page_size', 20);      
          $searchTerm = $request->input('search', '');         
          
-         $juegos = Game::paginate($pageSize);
+         // Aplicamos filtro de búsqueda si existe un término de búsqueda
+         $query = Game::query();
+         
+         if (!empty($searchTerm)) {
+             $query->where('name', 'like', '%' . $searchTerm . '%');
+         }
+         
+         $juegos = $query->paginate($pageSize);
          
          return inertia('games', [
              'juegos' => $juegos->items(),
@@ -40,18 +47,22 @@ class VideojuegoController extends Controller
      * Guarda un juego en la biblioteca del usuario
      */
     public function saveGame($id)
-    {
-        $user = Auth::user();
-        $game = Game::findOrFail($id);
-        
-        // Comprueba si el juego ya está en la biblioteca del usuario
-        if (!$user->games()->where('game_id', $id)->exists()) {
-            $user->games()->attach($id);
-            return redirect()->back()->with('success', 'Juego añadido a tu biblioteca');
-        }
-        
-        return redirect()->back()->with('info', 'Este juego ya está en tu biblioteca');
+{
+    $user = Auth::user();
+    $game = Game::findOrFail($id);
+    
+    // Comprueba si el juego ya está en la biblioteca del usuario
+    if (!$user->games()->where('game_id', $id)->exists()) {
+        $user->games()->attach($id);
+        return redirect()->back()
+            ->with('message', 'Juego añadido a tu biblioteca correctamente')
+            ->with('type', 'success');
     }
+    
+    return redirect()->back()
+        ->with('message', 'Este juego ya está en tu biblioteca')
+        ->with('type', 'error');
+}
     
      /**
       * Summary of guardar

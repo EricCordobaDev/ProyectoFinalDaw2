@@ -3,7 +3,7 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Settings, Trash2 } from 'lucide-react';
+import { Settings, Trash2, Star } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,8 +54,16 @@ export default function Profile() {
                             {auth.user.games.map((game) => (
                                 <div
                                     key={game.id}
-                                    className="overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
+                                    className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
                                 >
+                                    {/* Estrella de rating */}
+                                    {game.rating && (
+                                        <div className="absolute top-2 right-2 z-10 flex items-center space-x-1 rounded bg-black/30 px-2 py-0.5">
+                                            <Star className="h-5 w-5 text-yellow-400" fill="#FFD700" />
+                                            <span className="font-medium text-white">{game.rating}</span>
+                                        </div>
+                                    )}
+                                    
                                     <div className="h-48 overflow-hidden">
                                         {game.background_image ? (
                                             <img src={game.background_image} alt={game.name} className="h-full w-full object-cover" />
@@ -68,6 +76,21 @@ export default function Profile() {
                                     <div className="p-4">
                                         <h3 className="mb-2 line-clamp-2 text-lg font-bold">{game.name}</h3>
                                         <div className="mt-2 flex items-center justify-between">
+                                            {/* Metacritic */}
+                                            {game.metacritic && (
+                                                <div
+                                                    className={`rounded px-2 py-1 font-medium ${
+                                                        game.metacritic >= 75
+                                                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                                                            : game.metacritic >= 50
+                                                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
+                                                              : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                                                    }`}
+                                                >
+                                                    {game.metacritic}
+                                                </div>
+                                            )}
+                                            
                                             <button
                                                 onClick={() => handleDeleteGame(game.id)}
                                                 className="flex items-center rounded bg-red-50 px-3 py-1 text-sm text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 dark:bg-gray-700 dark:hover:bg-gray-600"
