@@ -11,6 +11,7 @@ interface Game {
     background_image?: string;
     released?: string;
     metacritic?: number;
+    rating: number;
 }
 
 interface Pagination {

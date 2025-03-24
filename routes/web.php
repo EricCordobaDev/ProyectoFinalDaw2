@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideojuegoController;
@@ -40,6 +41,8 @@ Route::delete('/user/games/{game}', [UserController::class, 'destroyGame'])
     ->name('user.games.destroy');
     
 Route::get('profile', [UserController::class, 'index'])->name('profile');
+
+Route::get('messages', [MessageController::class, 'index'])->name('messages');
 
 
 

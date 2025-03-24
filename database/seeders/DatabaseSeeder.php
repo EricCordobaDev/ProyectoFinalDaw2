@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
                'birthdate' => '2005-12-05',
                'phone' => '634461950',
                'email' => 'cordobamataeric@gmail.com',
-               'password' => bcrypt('1234'),
+               'password' => bcrypt('1234'),               
           ]);
      }
 }
