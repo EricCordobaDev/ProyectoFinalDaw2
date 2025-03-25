@@ -1,23 +1,19 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
-import * as React from "react"
-
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { Calendar } from "@/components/ui/calendar"
 
 interface RegisterForm {
      name: string;
      email: string;
      password: string;
      password_confirmation: string;
-     image: File | null;
-     birthdate: string | null; 
+     image: File | null;    
 }
 
 export default function Register() {
@@ -26,11 +22,9 @@ export default function Register() {
           email: '',
           password: '',
           password_confirmation: '',
-          image: null,
-          birthdate: null,
+          image: null,         
      });
-
-     const [date, setDate] = React.useState<Date | undefined>(new Date())
+    
 
      const submit: FormEventHandler = (e) => {
           e.preventDefault();
@@ -73,24 +67,7 @@ export default function Register() {
                                    onChange={(e) => setData('image', e.target.files?.[0] || null)}
                               />
                               <InputError message={errors.image} className="mt-2" />
-                         </div>
-
-                         <div className="grid gap-2">
-                              <Label htmlFor="birthdate">Fecha de nacimiento</Label>
-                              <Calendar
-                                   id="birthdate"
-                                   mode="single"
-                                   selected={date}
-                                   onSelect={(selectedDate) => {
-                                        setDate(selectedDate);
-                                        if (selectedDate) {
-                                             setData('birthdate', selectedDate.toISOString().split('T')[0]);
-                                        }
-                                   }}
-                                   className="rounded-md border shadow"
-                              />
-                              <InputError message={errors.birthdate} className="mt-2" />
-                         </div>
+                         </div>                       
 
                          <div className="grid gap-2">
                               <Label htmlFor="email">Correo electrónico</Label>
