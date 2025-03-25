@@ -306,23 +306,7 @@ export default function Welcome() {
                     >
                       Más información
                     </Link>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">500K+</div>
-                      <div className="text-sm text-muted-foreground">Usuarios</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">100+</div>
-                      <div className="text-sm text-muted-foreground">Juegos</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">50+</div>
-                      <div className="text-sm text-muted-foreground">Países</div>
-                    </div>
-                  </div>
+                  </div>                 
                 </div>
                 <div                 
                   className="relative"
@@ -438,132 +422,8 @@ export default function Welcome() {
                 </div>
               </div>
             </div>
-          </section>
-         
+          </section>     
 
-          {/* Community Section */}
-          <section id="community" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
-            <div className="container px-4 md:px-6">
-              <div className="grid gap-10 px-10 md:gap-16 lg:grid-cols-2">
-                <div
-                  className="space-y-4"
-                  
-                >
-                  <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">Comunidad</div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                    Únete a miles de jugadores en todo el mundo
-                  </h2>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                    Nuestra comunidad abarca todas las plataformas y géneros de juegos. Ya seas un jugador casual o un
-                    competidor de esports, encontrarás tu lugar aquí.
-                  </p>
-                  <Link
-                    href={route("register")}
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
-                  >
-                    Únete ahora <ChevronRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-                <div
-                  className="grid grid-cols-2 gap-4"
-                 
-                >
-                  <div
-                    className="aspect-square rounded-xl bg-muted overflow-hidden"
-                   >
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Comunidad de jugadores"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div
-                    className="aspect-square rounded-xl bg-muted overflow-hidden"
-                    
-                  >
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Torneo de gaming"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div
-                    className="aspect-square rounded-xl bg-muted overflow-hidden"
-                  
-                  >
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Equipo de esports"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div
-                    className="aspect-square rounded-xl bg-muted overflow-hidden"
-                  
-                  >
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Evento de gaming"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Testimonials Section */}
-          <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
-              <div
-                className="flex flex-col items-center justify-center space-y-4 text-center mb-10"
-              
-              >
-                <div className="space-y-2">
-                  <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-                    Testimonios
-                  </div>
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-                    Lo que dicen nuestros usuarios
-                  </h2>
-                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                    Descubre cómo GameLive ha transformado la experiencia de juego de nuestra comunidad.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {testimonials.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-4 rounded-lg border p-6 shadow-sm"
-                   
-                  >
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={testimonial.avatar || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        className="h-12 w-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <h3 className="font-semibold">{testimonial.name}</h3>
-                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                      </div>
-                    </div>
-                    <div className="flex">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${i < testimonial.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground">{testimonial.content}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
 
           {/* FAQ Section */}
           <section id="faq" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">

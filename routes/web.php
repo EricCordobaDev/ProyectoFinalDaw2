@@ -32,8 +32,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     
     // Rutas de posts
-    Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-    Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('posts', [PostController::class, 'store'])->name('posts.store');    
     Route::post('posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
 });
 
