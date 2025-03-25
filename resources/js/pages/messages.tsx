@@ -17,6 +17,7 @@ interface Contact {
     name: string;
     email: string;
     profile_photo_url?: string;
+    image?: string;
 }
 
 interface Message {
@@ -154,8 +155,12 @@ export default function Messages() {
                                                 setShowNewMessage(false);
                                             }}
                                         >
-                                            {user.profile_photo_url ? (
-                                                <img src={user.profile_photo_url} alt={user.name} className="w-8 h-8 rounded-full mr-2" />
+                                            {user.image ? (
+                                                <img 
+                                                    src={`/storage/${user.image}`} 
+                                                    alt={`${user.name} avatar`}
+                                                    className="w-8 h-8 rounded-full mr-2 object-cover" 
+                                                />
                                             ) : (
                                                 <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-2">
                                                     {user.name.charAt(0).toUpperCase()}
@@ -181,8 +186,12 @@ export default function Messages() {
                                         }`}
                                         onClick={() => setSelectedContact(contact)}
                                     >
-                                        {contact.profile_photo_url ? (
-                                            <img src={contact.profile_photo_url} alt={contact.name} className="w-10 h-10 rounded-full mr-3" />
+                                        {contact.image ? (
+                                            <img 
+                                                src={`/storage/${contact.image}`} 
+                                                alt={`${contact.name} avatar`}
+                                                className="w-10 h-10 rounded-full mr-3 object-cover"
+                                            />
                                         ) : (
                                             <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
                                                 {contact.name.charAt(0).toUpperCase()}
@@ -208,8 +217,12 @@ export default function Messages() {
                             <>
                                 {/* Cabecera del chat */}
                                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-                                    {selectedContact.profile_photo_url ? (
-                                        <img src={selectedContact.profile_photo_url} alt={selectedContact.name} className="w-10 h-10 rounded-full mr-3" />
+                                    {selectedContact.image ? (
+                                        <img 
+                                            src={`/storage/${selectedContact.image}`} 
+                                            alt={`${selectedContact.name} avatar`}
+                                            className="w-10 h-10 rounded-full mr-3 object-cover" 
+                                        />
                                     ) : (
                                         <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
                                             {selectedContact.name.charAt(0).toUpperCase()}

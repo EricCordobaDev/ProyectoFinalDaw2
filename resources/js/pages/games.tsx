@@ -112,22 +112,34 @@ export default function Games({
             
             {/* Notificación */}
             {notification && notification.visible && (
-                <div className={`fixed top-4 left-1/2 z-50 -translate-x-1/2 transform rounded-md px-6 py-3 shadow-lg transition-all ${
-                    notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-                }`}>
-                    <div className="flex items-center justify-between">
-                        <span>{notification.message}</span>
-                        <button onClick={closeNotification} className="ml-4 rounded-full p-1 hover:bg-white/20">
-                            <X className="h-4 w-4" />
+                <div 
+                    className={`
+                        fixed top-20 left-1/2 z-[9999] -translate-x-1/2 transform 
+                        rounded-lg px-6 py-4 shadow-2xl
+                        animate-in fade-in slide-in-from-top-4 duration-300
+                        ${notification.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}
+                    `}
+                    style={{
+                        minWidth: '300px',
+                        maxWidth: '90%'
+                    }}
+                >
+                    <div className="flex items-center justify-between gap-4">
+                        <span className="text-lg font-medium">{notification.message}</span>
+                        <button 
+                            onClick={closeNotification} 
+                            className="rounded-full p-1.5 hover:bg-white/20 transition-colors"
+                        >
+                            <X className="h-5 w-5" />
                         </button>
                     </div>
                 </div>
             )}
-            
+
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="mb-6 text-2xl font-bold">Catálogo de Videojuegos</h1>
                 
-                {/* Buscador (ahora sin necesidad de enviar el formulario) */}
+                {/* Buscador */}
                 <div className="mb-6">
                     <div className="relative">
                         <input
