@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Heart } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Link } from '@inertiajs/react';
 
 interface PostCardProps {
   post: {
@@ -23,19 +24,16 @@ interface PostCardProps {
   onDelete?: (id: number) => void;
   onLike?: (id: number) => void;
 }
-
 export default function PostCard({ post, onLike }: PostCardProps) {
-
   
   const handleLike = () => {
     if (!onLike) return;
     onLike(post.id);
   };
-
   return (
     <Card className="mb-4 overflow-hidden">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
-        <div className="h-10 w-10 rounded-full overflow-hidden">
+        <Link href={`/profile?userId=${post.user.id}`} className="h-10 w-10 rounded-full overflow-hidden">
            {/*Si el usuario tiene foto de perfil */}
           {post.user.image ? (
             <img 
@@ -49,9 +47,11 @@ export default function PostCard({ post, onLike }: PostCardProps) {
               {post.user.name.charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
+        </Link>
         <div className="flex flex-col">
-          <p className="font-medium">{post.user.name}</p>
+          <Link href={`/profile?userId=${post.user.id}`} className="font-medium hover:underline">
+            {post.user.name}
+          </Link>
           <p className="text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
           </p>
