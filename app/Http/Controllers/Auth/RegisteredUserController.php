@@ -35,12 +35,14 @@ class RegisteredUserController extends Controller
                 'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+                'birthdate' => 'required|date|before:today', 
            ]);     
           
            $userData = [
                'name' => $request->name,
                'email' => $request->email,
                'password' => Hash::make($request->password),
+               'birthdate' => $request->birthdate,
           ];
       
            // Procesar la imagen solo si se ha subido una
@@ -48,7 +50,7 @@ class RegisteredUserController extends Controller
                 $image = $request->file('image');
                 // Generar un nombre único para la imagen
                 $nombreImagen = time() . '.' . $image->getClientOriginalExtension();
-                // Guardar la imagen en el disco 'public' dentro de la carpeta 'images'
+                // Guardar la imagen en el disco 'public' dentro de la carpeta 'avatarImages'
                 $userData['image'] = $image->storeAs('avatarImages', $nombreImagen, 'public');
            }
 

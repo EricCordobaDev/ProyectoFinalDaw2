@@ -46,6 +46,9 @@ export default function Games({
         type: 'success' | 'error';
         visible: boolean;
     } | null>(null);
+    
+    // Temporizador para implementar debounce en la búsqueda
+    const [searchTimer, setSearchTimer] = useState<NodeJS.Timeout | null>(null);
 
     // Procesar mensajes flash recibidos del servidor
     useEffect(() => {
@@ -65,12 +68,36 @@ export default function Games({
         }
     }, [flash.message]);
 
+    // Efecto para la búsqueda en tiempo real
+    useEffect(() => {
+        // Cancelar el temporizador anterior si existe
+        if (searchTimer) {
+            clearTimeout(searchTimer);
+        }
+        
+        // Crear un nuevo temporizador para realizar la búsqueda después de 500ms
+        const timer = setTimeout(() => {
+            // Solo realizar la búsqueda si el término difiere del término actual
+            if (search !== searchTerm) {
+                router.get('/games', { search: search }, {
+                    preserveState: true,
+                    preserveScroll: true,
+                });
+            }
+        }, 500); // Retraso de 500ms para evitar solicitudes excesivas
+        
+        setSearchTimer(timer);
+        
+        // Limpiar el temporizador al desmontar
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+    }, [search]); // Se ejecuta cada vez que cambia el término de búsqueda
+
+    // Mantenemos esta función por si quieres conservar el botón de búsqueda como respaldo
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        router.get('/games', { search: search }, {
-            preserveState: true,
-            preserveScroll: true,
-        });
+        // Esta función ahora es opcional ya que la búsqueda se realiza automáticamente
     };
 
     const closeNotification = () => {
@@ -100,8 +127,8 @@ export default function Games({
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="mb-6 text-2xl font-bold">Catálogo de Videojuegos</h1>
                 
-                {/* Buscador */}
-                <form onSubmit={handleSearch} className="mb-6">
+                {/* Buscador (ahora sin necesidad de enviar el formulario) */}
+                <div className="mb-6">
                     <div className="relative">
                         <input
                             type="text"
@@ -113,14 +140,8 @@ export default function Games({
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                             <Search className="h-5 w-5 text-gray-400" />
                         </div>
-                        <button
-                            type="submit"
-                            className="absolute inset-y-0 right-0 flex items-center rounded-r-lg bg-blue-500 px-4 text-white hover:bg-blue-600"
-                        >
-                            Buscar
-                        </button>
                     </div>
-                </form>
+                </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {juegos.map((juego) => (
