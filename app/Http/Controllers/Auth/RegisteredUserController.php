@@ -34,13 +34,19 @@ class RegisteredUserController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',                
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+                'birthdate' => 'required|date',
+                'phone' => 'nullable|string|max:15',            
            ]);     
           
            $userData = [
                'name' => $request->name,
                'email' => $request->email,
-               'password' => Hash::make($request->password),               
+               'password' => Hash::make($request->password),  
+               'birthdate' => $request->birthdate,   
+               'phone' => $request->phone,
+          
+
           ];
       
            // Procesar la imagen solo si se ha subido una
