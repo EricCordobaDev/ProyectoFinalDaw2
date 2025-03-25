@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,10 +12,24 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        // Si se proporciona un userId, mostrar el perfil de ese usuario
+        if ($request->has('userId')) {
+            $user = User::with('games')->findOrFail($request->userId);
+            
+            return inertia('profile', [
+                'user' => array_merge($user->toArray(), [
+                    'games' => $user->games
+                ]),
+                'isCurrentUser' => $request->user()->id === $user->id
+            ]);
+        }
+        
+        // Si no hay userId, mostrar el perfil del usuario actual
         return inertia('profile', [
             'user' => array_merge($request->user()->toArray(), [
                 'games' => $request->user()->games
-            ])
+            ]),
+            'isCurrentUser' => true
         ]);
     }
 
