@@ -12,22 +12,31 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $authUser = $request->user();
+
         // Si se proporciona un userId, mostrar el perfil de ese usuario
         if ($request->has('userId')) {
             $user = User::with('games')->findOrFail($request->userId);
+            $user->followers_count = $user->followers()->count();
+            $user->following_count = $user->following()->count();
+            $user->is_followed_by_auth_user = $authUser ? $authUser->isFollowing($user) : false;
             
             return inertia('profile', [
                 'user' => array_merge($user->toArray(), [
                     'games' => $user->games
                 ]),
-                'isCurrentUser' => $request->user()->id === $user->id
+                'isCurrentUser' => $authUser ? ($authUser->id === $user->id) : false
             ]);
         }
         
         // Si no hay userId, mostrar el perfil del usuario actual
+        $authUser->followers_count = $authUser->followers()->count();
+        $authUser->following_count = $authUser->following()->count();
+        $authUser->is_followed_by_auth_user = false; // No se puede seguir a uno mismo
+        
         return inertia('profile', [
-            'user' => array_merge($request->user()->toArray(), [
-                'games' => $request->user()->games
+            'user' => array_merge($authUser->toArray(), [
+                'games' => $authUser->games
             ]),
             'isCurrentUser' => true
         ]);

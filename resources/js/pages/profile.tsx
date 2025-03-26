@@ -3,7 +3,7 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Settings, Star, Trash2 } from 'lucide-react';
+import { Settings, Star, Trash2, UserMinus, UserPlus, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,6 +18,9 @@ interface ProfileProps {
         name: string;
         image?: string;
         games: any[];
+        followers_count: number;
+        following_count: number;
+        is_followed_by_auth_user: boolean;
     };
     isCurrentUser: boolean;
 }
@@ -31,6 +34,14 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
         router.delete(route('user.games.destroy', gameId));
     };
 
+    const handleFollow = () => {
+        router.post(route('users.follow', user.id));
+    };
+
+    const handleUnfollow = () => {
+        router.delete(route('users.unfollow', user.id));
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Perfil de ${user.name}`}>
@@ -42,8 +53,7 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                 <div className="rounded-lg p-6">
                     <div className="mb-6 flex items-center justify-between">
                         <div className="flex items-center">
-                            <div className="mr-4 h-10 w-10 overflow-hidden rounded-full">
-                                {/*Si el usuario tiene foto de perfil */}
+                            <div className="mr-4 h-16 w-16 overflow-hidden rounded-full">
                                 {user.image ? (
                                     <img src={`/storage/${user.image}`} alt={`${user.name} avatar`} className="h-full w-full object-cover" />
                                 ) : (
@@ -52,20 +62,56 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                     </div>
                                 )}
                             </div>
-                            <h1 className="text-2xl font-bold">Perfil de {user.name}</h1>
+                            <div>
+                                <h1 className="text-2xl font-bold">Perfil de {user.name}</h1>
+                                <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+                                    <Link href={route('users.followers', user.id)} className="flex items-center hover:text-gray-700">
+                                        <Users className="mr-1 h-4 w-4" />
+                                        <span>{user.followers_count} seguidores</span>
+                                    </Link>
+                                    <Link href={route('users.following', user.id)} className="flex items-center hover:text-gray-700">
+                                        <Users className="mr-1 h-4 w-4" />
+                                        <span>Siguiendo a {user.following_count}</span>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                        {isCurrentUser && (
-                            <Link
-                                className="flex items-center rounded-lg bg-gray-100 px-4 py-2 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                href={route('profile.edit')}
-                                as="button"
-                                prefetch
-                                onClick={cleanup}
-                            >
-                                <Settings className="mr-2" size={18} />
-                                Configuración
-                            </Link>
-                        )}
+                        <div className="flex space-x-2">
+                            {!isCurrentUser && (
+                                <button
+                                    onClick={user.is_followed_by_auth_user ? handleUnfollow : handleFollow}
+                                    className={`flex items-center rounded-lg px-4 py-2 transition-colors ${
+                                        user.is_followed_by_auth_user
+                                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                                            : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+                                    }`}
+                                >
+                                    {user.is_followed_by_auth_user ? (
+                                        <>
+                                            <UserMinus className="mr-2 h-5 w-5" />
+                                            Dejar de seguir
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UserPlus className="mr-2 h-5 w-5" />
+                                            Seguir
+                                        </>
+                                    )}
+                                </button>
+                            )}
+                            {isCurrentUser && (
+                                <Link
+                                    className="flex items-center rounded-lg bg-gray-100 px-4 py-2 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                    href={route('profile.edit')}
+                                    as="button"
+                                    prefetch
+                                    onClick={cleanup}
+                                >
+                                    <Settings className="mr-2" size={18} />
+                                    Configuración
+                                </Link>
+                            )}
+                        </div>
                     </div>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2"></div>
                 </div>

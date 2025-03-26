@@ -53,6 +53,54 @@ class User extends Authenticatable
      }
 
      /**
+      * Obtiene todos los usuarios que siguen a este usuario
+      */
+     public function followers()
+     {
+          return $this->hasMany(Follower::class, 'followed_id');
+     }
+
+     /**
+      * Obtiene todos los usuarios a los que este usuario sigue
+      */
+     public function following()
+     {
+          return $this->hasMany(Follower::class, 'follower_id');
+     }
+
+     /**
+      * Comprueba si este usuario sigue a otro usuario específico
+      */
+     public function isFollowing(User $user)
+     {
+          return $this->following()->where('followed_id', $user->id)->exists();
+     }
+
+     /**
+      * Seguir a otro usuario
+      */
+     public function follow(User $user)
+     {
+          if ($this->id !== $user->id && !$this->isFollowing($user)) {
+               return Follower::create([
+                    'follower_id' => $this->id,
+                    'followed_id' => $user->id
+               ]);
+          }
+          return false;
+     }
+
+     /**
+      * Dejar de seguir a un usuario
+      */
+     public function unfollow(User $user)
+     {
+          return Follower::where('follower_id', $this->id)
+               ->where('followed_id', $user->id)
+               ->delete();
+     }
+
+     /**
       * The attributes that should be hidden for serialization.
       *
       * @var list<string>

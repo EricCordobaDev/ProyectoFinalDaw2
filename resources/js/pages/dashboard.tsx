@@ -6,6 +6,11 @@ import PostForm from '@/components/post-form';
 import PostCard from '@/components/post-card';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
+import { RefreshCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -33,6 +38,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
     const { auth } = usePage().props as any;
     const currentUserId = auth.user?.id;
     const [localPosts, setLocalPosts] = useState(posts);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     
     useEffect(() => {
         setLocalPosts(posts);
@@ -95,32 +101,85 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
         });
     };
 
+    const refreshFeed = () => {
+        setIsRefreshing(true);
+        router.reload({
+            onSuccess: () => setIsRefreshing(false),
+            onError: () => setIsRefreshing(false),
+            onFinish: () => setIsRefreshing(false),
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
            <Head title="Inicio">
                 <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="max-w-3xl mx-auto w-full">
-                    <PostForm />
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 md:p-6">
+                <div className="mx-auto w-full max-w-3xl">
+                    <Card className="mb-6 border-none shadow-sm bg-gradient-to-br from-background to-muted/40">
+                        <CardContent className="p-4 sm:p-6">
+                            <PostForm />
+                        </CardContent>
+                    </Card>
                     
-                    <div className="space-y-4">
-                        {localPosts.length > 0 ? (
-                            localPosts.map((post) => (
-                                <PostCard 
-                                    key={post.id} 
-                                    post={post} 
-                                    currentUserId={currentUserId}
-                                    onDelete={handleDelete}
-                                    onLike={handleLike}
-                                />
-                            ))
-                        ) : (
-                            <div className="text-center py-10 text-muted-foreground">
-                                No hay publicaciones todavía. ¡Sé el primero en publicar algo!
-                            </div>
-                        )}
+                    <div className="mb-6 flex items-center justify-between">
+                        <h2 className="text-2xl font-semibold tracking-tight">Tu feed</h2>
+                        <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={refreshFeed}
+                            disabled={isRefreshing}
+                            className="flex items-center gap-2"
+                        >
+                            <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            <span className="hidden sm:inline">Actualizar</span>
+                        </Button>
                     </div>
+                    
+                    <Tabs defaultValue="all" className="mb-6">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="all">Todo</TabsTrigger>
+                            <TabsTrigger value="following">Siguiendo</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="all" className="mt-4">
+                            <AnimatePresence>
+                                {localPosts.length > 0 ? (
+                                    <motion.div className="space-y-4">
+                                        {localPosts.map((post) => (
+                                            <motion.div 
+                                                key={post.id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <PostCard 
+                                                    post={post} 
+                                                    currentUserId={currentUserId}
+                                                    onDelete={handleDelete}
+                                                    onLike={handleLike}
+                                                />
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
+                                ) : (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="rounded-lg border border-dashed p-10 text-center"
+                                    >
+                                        <p className="text-muted-foreground">No hay publicaciones todavía. ¡Sé el primero en publicar algo!</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </TabsContent>
+                        <TabsContent value="following" className="mt-4">
+                            <div className="rounded-lg border border-dashed p-10 text-center">
+                                <p className="text-muted-foreground">Esta función estará disponible próximamente.</p>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
           
