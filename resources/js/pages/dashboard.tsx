@@ -137,12 +137,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                         </Button>
                     </div>
                     
-                    <Tabs defaultValue="all" className="mb-6">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="all">Todo</TabsTrigger>
-                            <TabsTrigger value="following">Siguiendo</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="all" className="mt-4">
+                
                             <AnimatePresence>
                                 {localPosts.length > 0 ? (
                                     <motion.div className="space-y-4">
@@ -173,13 +168,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-                        </TabsContent>
-                        <TabsContent value="following" className="mt-4">
-                            <div className="rounded-lg border border-dashed p-10 text-center">
-                                <p className="text-muted-foreground">Esta función estará disponible próximamente.</p>
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+                       
                 </div>
             </div>
           
