@@ -14,10 +14,19 @@ const appName = 'GameLive';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+    resolve: async (name) => {
+        try {
+            const page = await resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx'));
+            return page;
+        } catch (error) {
+            console.error(`Error loading page ${name}:`, error);
+            // Redirigir a la página de inicio en caso de error
+            window.location.href = '/dashboard';
+            return null;
+        }
+    },
     setup({ el, App, props }) {
         const root = createRoot(el);
-
         root.render(<App {...props} />);
     },
     progress: {

@@ -103,10 +103,12 @@ export default function PostCard({ post, onLike, onDelete, currentUserId }: Post
                 </TooltipProvider>
                 
                 <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" className="flex gap-1.5">
-                        <MessageCircle className="h-4 w-4" />
-                        <span className="sr-only md:not-sr-only">Comentar</span>
-                    </Button>                   
+                    <Link href={`/posts/${post.id}`}>
+                        <Button variant="ghost" size="sm" className="flex gap-1.5">
+                            <MessageCircle className="h-4 w-4" />
+                            <span className="sr-only md:not-sr-only">Comentar</span>
+                        </Button>
+                    </Link>                   
                   
                 </div>
             </CardFooter>

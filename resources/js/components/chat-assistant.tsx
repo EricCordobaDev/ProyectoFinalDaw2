@@ -1,13 +1,53 @@
-import { useState, useEffect, FormEvent, useRef } from 'react';
-import { HfInference } from "https://cdn.skypack.dev/@huggingface/inference";
-
-// Initialize the Hugging Face Inference client
-const client = new HfInference("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");
+import { useState, useEffect, FormEvent, useRef, ReactNode } from 'react';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
+
+// Función para formatear el texto con negrita y listas
+const formatMessageText = (text: string): ReactNode[] => {
+  if (!text) return [];
+  
+  // Dividir por líneas para manejar listas
+  const lines = text.split('\n');
+  
+  return lines.map((line, lineIndex) => {
+    // Verificar si la línea comienza con un asterisco (elemento de lista)
+    if (line.trim().startsWith('*')) {
+      return (
+        <li key={`line-${lineIndex}`} className="ml-5 list-disc">
+          {formatBoldText(line.trim().substring(1).trim())}
+        </li>
+      );
+    }
+    
+    // Línea normal, procesamos las negritas
+    return (
+      <div key={`line-${lineIndex}`} className="mb-1">
+        {formatBoldText(line)}
+      </div>
+    );
+  });
+};
+
+// Función para formatear texto en negrita
+const formatBoldText = (text: string): ReactNode[] => {
+  // Patrón para encontrar texto entre dos asteriscos (**texto**)
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  
+  return parts.map((part, index) => {
+    // Si coincide con el patrón de negrita
+    if (part.startsWith('**') && part.endsWith('**')) {
+      // Eliminar los asteriscos y poner en negrita
+      const boldText = part.substring(2, part.length - 2);
+      return <strong key={index}>{boldText}</strong>;
+    }
+    
+    // Texto normal
+    return <span key={index}>{part}</span>;
+  });
+};
 
 export default function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,41 +84,43 @@ export default function ChatAssistant() {
     setIsLoading(true);
 
     try {
-      const chatCompletion = await client.chatCompletion({
-        model: "meta-llama/Llama-3.2-11B-Vision-Instruct",
-        messages: [
-          {
-            role: "system",
-            content: [
-              {
-                type: "text",
-                text: "Eres un asistente especializado en videojuegos. Proporciona respuestas útiles sobre el mundo de los videojuegos.",
-              },
-            ],
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: userInput,
-              },
-            ],
-          },
-        ],
-        max_tokens: 500,
-      });
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+               "Authorization": "Bearer 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",
+                
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "google/gemma-3-4b-it:free",
+                messages: [
+                    {
+                        role: "system",
+                        content: "Eres un asistente especializado en videojuegos. Proporciona respuestas útiles sobre el mundo de los videojuegos."
+                    },
+                    ...messages.map(msg => ({
+                        role: msg.role,
+                        content: msg.content
+                    })),
+                    {
+                        role: "user",
+                        content: userInput
+                    }
+                ]
+            })
+        });
 
-      const assistantMessage = chatCompletion.choices[0].message.content;
-      setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+        const data = await response.json();
+        const assistantMessage = data.choices[0].message.content;
+        setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
     } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Lo siento, no pude procesar tu solicitud. Por favor, inténtalo de nuevo.' 
-      }]);
+        console.error('Error:', error);
+        setMessages(prev => [...prev, { 
+            role: 'assistant', 
+            content: 'Lo siento, no pude procesar tu solicitud. Por favor, inténtalo de nuevo.' 
+        }]);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
   };
 
@@ -110,8 +152,11 @@ export default function ChatAssistant() {
       <div
         className={`fixed bottom-6 right-6 w-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transition-all duration-500 ease-in-out transform ${
           isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
-        } max-h-[80vh] flex flex-col`}
-        style={{ maxWidth: "calc(100vw - 32px)" }}
+        } flex flex-col`}
+        style={{ 
+          maxWidth: "calc(100vw - 32px)", 
+          maxHeight: "min(90vh, calc(100vh - 12rem))" // Ajusta proporcionalmente según el tamaño de la pantalla
+        }}
       >
         <div className="bg-indigo-600 text-white p-4 flex justify-between items-center shadow-md">
           <div className="flex items-center">
@@ -167,7 +212,10 @@ export default function ChatAssistant() {
                   </span>
                 </div>
                 <div className="pl-8">
-                  <span className="whitespace-pre-wrap">{message.content}</span>
+                  {/* Reemplazamos el texto plano con el formateado */}
+                  <div className="whitespace-pre-wrap">
+                    {formatMessageText(message.content)}
+                  </div>
                 </div>
               </div>
             </div>

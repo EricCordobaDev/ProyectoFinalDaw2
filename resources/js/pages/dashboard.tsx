@@ -7,7 +7,6 @@ import PostCard from '@/components/post-card';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -72,14 +71,13 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
             })
         );
         
-        // Luego realizamos la petición en segundo plano sin mostrar indicadores visuales
-        router.post(route('posts.like', postId), {}, {
+        // Luego realizamos la petición en segundo plano
+        router.visit(route('posts.like', postId), {
+            method: 'post',
             preserveScroll: true,
             preserveState: true,
-            // Estas opciones evitan que se muestre cualquier indicador visual de carga
-            only: [],
             onSuccess: () => {
-                // La acción ya se reflejó en la UI con el cambio de estado anterior
+                // Manejo exitoso, no hacer nada visible al usuario
             },
             onError: (errors) => {
                 console.error('Error:', errors);

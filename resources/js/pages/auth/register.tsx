@@ -84,22 +84,7 @@ export default function Register() {
                             max={new Date().toISOString().split('T')[0]}                       
                         />
                         <InputError message={errors.birthdate} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="date">Telefono</Label>
-                        <Input
-                            id="phone"
-                            type="text"
-                            tabIndex={3}
-                            value={data.phone}
-                            onChange={(e) => setData('phone', e.target.value)}
-                            disabled={processing}
-                            placeholder="ej: 612345678"
-                                                 
-                        />
-                        <InputError message={errors.phone} />
-                    </div>
+                    </div>                   
 
                     <div className="grid gap-2">
                         <Label htmlFor="email">Correo electrónico</Label>

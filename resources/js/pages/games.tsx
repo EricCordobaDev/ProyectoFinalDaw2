@@ -2,8 +2,9 @@ import AiChatBot from '@/components/chat-assistant';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, Star, X } from 'lucide-react';
+import { Search, Star as StarIcon, X } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Game {
     id: number;
@@ -12,6 +13,7 @@ interface Game {
     released?: string;
     metacritic?: number;
     rating: number;
+    saved_by_user: boolean;
 }
 
 interface Pagination {
@@ -104,6 +106,58 @@ export default function Games({
         setNotification(prev => prev ? {...prev, visible: false} : null);
     };
 
+    // Función para renderizar números de página
+    const renderPageNumbers = () => {
+        if (!paginacion) return null;
+        
+        const pageNumbers = [];
+        const maxVisiblePages = 5;
+        const startPage = Math.max(1, paginacion.current_page - Math.floor(maxVisiblePages / 2));
+        const endPage = Math.min(paginacion.total_pages, startPage + maxVisiblePages - 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(
+                <Button
+                    key={i}
+                    variant={paginacion.current_page === i ? "default" : "outline"}
+                    onClick={() => router.get('/games', { page: i, search }, { preserveState: true })}
+                >
+                    {i}
+                </Button>
+            );
+        }
+
+        return pageNumbers;
+    };
+
+    const handleSaveGame = (gameId: number) => {
+     router.post(`/games/save/${gameId}`);
+ };
+
+    // Función para renderizar estrellas según el rating
+    const renderStars = (rating: number) => {
+        // Asumimos que el rating está en escala 0-5
+        // Si está en otra escala (ej. 0-10), normalizamos a 0-5
+        const normalizedRating = rating > 5 ? rating / 2 : rating;
+        const fullStars = Math.floor(normalizedRating);
+        const stars = [];
+
+        // Creamos 5 estrellas
+        for (let i = 0; i < 5; i++) {
+            // Si la posición actual es menor que el número de estrellas completas, la pintamos
+            stars.push(
+                <StarIcon 
+                    key={i} 
+                    className="h-4 w-4" 
+                    fill={i < fullStars ? "#FFD700" : "none"} 
+                    stroke={i < fullStars ? "#FFD700" : "currentColor"}
+                />
+            );
+        }
+        
+        return stars;
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Videojuegos">
@@ -161,11 +215,17 @@ export default function Games({
                             key={juego.id}
                             className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
                         >
-                            {/* Estrella */}
-                            <div className="absolute top-2 right-2 z-10 flex items-center space-x-1 rounded bg-black/30 px-2 py-0.5">
-                                <Star className="h-5 w-5 text-yellow-400" fill="#FFD700" />
-                                <span className="font-medium text-white">{juego.rating}</span>
-                            </div>
+                            {/* Puntuación Metacritic con colores según el valor */}
+                            {juego.metacritic > 0 && (
+                                <div 
+                                    className={`absolute top-2 right-2 z-10 rounded px-2 py-1 font-bold text-sm ${
+                                        juego.metacritic >= 75 ? 'bg-green-600 ' : 
+                                        juego.metacritic >= 50 ? 'bg-yellow-500' : 
+                                        'bg-red-600 '
+                                    }`}>
+                                    {juego.metacritic}
+                                </div>
+                            )}
 
                             <div className="h-48 overflow-hidden">
                                 {juego.background_image ? (
@@ -178,72 +238,69 @@ export default function Games({
                             </div>
                             <div className="p-4">
                                 <h3 className="mb-2 line-clamp-2 text-lg font-bold">{juego.name}</h3>
+                                
+                                {/* Rating con estrellas - Movido debajo de la imagen */}
+                                <div className="mb-2 flex items-center space-x-0.5">
+                                    {renderStars(juego.rating)}
+                                </div>
+                                
                                 <div className="mt-2 flex items-center justify-between">
                                     <div className="text-sm text-gray-600 dark:text-gray-300">
                                         {juego.released ? new Date(juego.released).toLocaleDateString() : 'Fecha desconocida'}
                                     </div>
-                                    {juego.metacritic && (
-                                        <div
-                                            className={`rounded px-2 py-1 font-medium ${
-                                                juego.metacritic >= 75
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                                                    : juego.metacritic >= 50
-                                                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
-                                                      : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                                            }`}
-                                        >
-                                            {juego.metacritic}
-                                        </div>
-                                    )}
                                 </div>
                                 <div className="mt-4">
-                                    <Link
-                                        href={`/games/save/${juego.id}`}
-                                        method="post"
-                                        as="button"
-                                        className="flex w-full items-center justify-center rounded bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600"
+                                <Button
+                                        onClick={() => handleSaveGame(juego.id)}
+                                        variant="outline"
+                                        className="w-full"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                        Añadir a mi biblioteca
-                                    </Link>
+                                       Añadir a Biblioteca
+                                    </Button>                                 
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Paginacion */}
+                {/* Paginación */}
                 {paginacion !== null && (
-                    <div className="mt-8 flex justify-center">
-                        <nav className="flex items-center gap-2">
-                            {paginacion.current_page > 1 && (
-                                <Link
-                                    href={`/games?page=${paginacion.current_page - 1}${search ? `&search=${search}` : ''}`}
-                                    className="rounded bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600"
-                                >
-                                    Anterior
-                                </Link>
-                            )}
+                    <div className="mt-8 flex justify-center items-center space-x-2">
+                        {paginacion.current_page > 1 && (
+                            <Button
+                                variant="outline"
+                                onClick={() => router.get('/games', { page: 1, search }, { preserveState: true })}
+                            >
+                                Primero
+                            </Button>
+                        )}
+                        {paginacion.current_page > 1 && (
+                            <Button
+                                variant="outline"
+                                onClick={() => router.get('/games', { page: paginacion.current_page - 1, search }, { preserveState: true })}
+                            >
+                                Anterior
+                            </Button>
+                        )}
 
-                            <span className="px-4 py-2">
-                                Página {paginacion.current_page} de {paginacion.total_pages}
-                            </span>
+                        {renderPageNumbers()}
 
-                            {paginacion.current_page < paginacion.total_pages && (
-                                <Link
-                                    href={`/games?page=${paginacion.current_page + 1}${search ? `&search=${search}` : ''}`}
-                                    className="rounded bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600"
-                                >
-                                    Siguiente
-                                </Link>
-                            )}
-                        </nav>
+                        {paginacion.current_page < paginacion.total_pages && (
+                            <Button
+                                variant="outline"
+                                onClick={() => router.get('/games', { page: paginacion.current_page + 1, search }, { preserveState: true })}
+                            >
+                                Siguiente
+                            </Button>
+                        )}
+                        {paginacion.current_page < paginacion.total_pages && (
+                            <Button
+                                variant="outline"
+                                onClick={() => router.get('/games', { page: paginacion.total_pages, search }, { preserveState: true })}
+                            >
+                                Último
+                            </Button>
+                        )}
                     </div>
                 )}
             </div>

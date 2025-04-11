@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
                     $post->liked_by_user = $post->isLikedBy($user);
                     return $post;
                 });
+
         return Inertia::render('dashboard', [
             'posts' => $posts
         ]);
@@ -44,8 +45,11 @@ Route::middleware(['auth'])->group(function () {
     
     // Rutas de posts
     Route::prefix('posts')->group(function () {
-        Route::post('/', [PostController::class, 'store'])->name('posts.store');    
+        Route::post('/', [PostController::class, 'store'])->name('posts.store');
+        Route::get('/{post}', [PostController::class, 'show'])->name('posts.show');
         Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
+        Route::post('/{post}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+        Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
     });
 
     // Rutas de seguidores
