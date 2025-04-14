@@ -122,17 +122,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                     </Card>
                     
                     <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-2xl font-semibold tracking-tight">Tu feed</h2>
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={refreshFeed}
-                            disabled={isRefreshing}
-                            className="flex items-center gap-2"
-                        >
-                            <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                            <span className="hidden sm:inline">Actualizar</span>
-                        </Button>
+                        <h2 className="text-2xl font-semibold tracking-tight">Tu feed</h2>                       
                     </div>
                     
                 

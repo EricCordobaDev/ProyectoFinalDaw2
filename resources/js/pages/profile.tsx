@@ -29,7 +29,7 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
     const { auth } = usePage<SharedData>().props;
     const cleanup = useMobileNavigation();
 
-    const handleDeleteGame = (gameId) => {
+    const handleDeleteGame = (gameId: number) => {
         if (!isCurrentUser) return;
         router.delete(route('user.games.destroy', gameId));
     };
@@ -128,12 +128,20 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                 <div
                                     key={game.id}
                                     className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
-                                >
-                                    {/* Estrella de rating */}
-                                    {game.rating && (
-                                        <div className="absolute top-2 right-2 z-10 flex items-center space-x-1 rounded bg-black/30 px-2 py-0.5">
-                                            <Star className="h-5 w-5 text-yellow-400" fill="#FFD700" />
-                                            <span className="font-medium text-white">{game.rating}</span>
+                                >                                  
+                                    {                                 
+                                     game.metacritic !== 0 &&                                   
+                                     Number(game.metacritic) > 0 && (
+                                        <div className={`absolute top-2 right-2 z-10 rounded px-2 py-1 font-medium
+                                            ${
+                                                game.metacritic >= 75
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                                                    : game.metacritic >= 50
+                                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
+                                                    : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                                            }`}
+                                        >
+                                            {game.metacritic}
                                         </div>
                                     )}
 
@@ -148,22 +156,23 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                     </div>
                                     <div className="p-4">
                                         <h3 className="mb-2 line-clamp-2 text-lg font-bold">{game.name}</h3>
-                                        <div className="mt-2 flex items-center justify-between">
-                                            {/* Metacritic */}
-                                            {game.metacritic && (
-                                                <div
-                                                    className={`rounded px-2 py-1 font-medium ${
-                                                        game.metacritic >= 75
-                                                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                                                            : game.metacritic >= 50
-                                                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
-                                                              : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                                                    }`}
-                                                >
-                                                    {game.metacritic}
-                                                </div>
-                                            )}
+                                        
+                                        {/* Sistema de 5 estrellas debajo del título */}
+                                        {game.rating && (
+                                            <div className="mb-3 flex items-center">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star 
+                                                        key={star}
+                                                        className="h-5 w-5" 
+                                                        fill={star <= Math.round(game.rating) ? "#FFD700" : "none"}
+                                                        color={star <= Math.round(game.rating) ? "#FFD700" : "#D1D5DB"}
+                                                    />
+                                                ))}
+                                                <span className="ml-2 text-sm text-gray-500">({game.rating}/5)</span>
+                                            </div>
+                                        )}
 
+                                        <div className="mt-2 flex items-center justify-between">
                                             {isCurrentUser && (
                                                 <button
                                                     onClick={() => handleDeleteGame(game.id)}

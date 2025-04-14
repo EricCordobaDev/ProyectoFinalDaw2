@@ -1,10 +1,11 @@
 import AiChatBot from '@/components/chat-assistant';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
-import { Search, Star as StarIcon, X } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { Search, Star as  X } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import GameCard from '@/components/GameCard';
 
 interface Game {
     id: number;
@@ -131,31 +132,7 @@ export default function Games({
     };
 
     const handleSaveGame = (gameId: number) => {
-     router.post(`/games/save/${gameId}`);
- };
-
-    // Función para renderizar estrellas según el rating
-    const renderStars = (rating: number) => {
-        // Asumimos que el rating está en escala 0-5
-        // Si está en otra escala (ej. 0-10), normalizamos a 0-5
-        const normalizedRating = rating > 5 ? rating / 2 : rating;
-        const fullStars = Math.floor(normalizedRating);
-        const stars = [];
-
-        // Creamos 5 estrellas
-        for (let i = 0; i < 5; i++) {
-            // Si la posición actual es menor que el número de estrellas completas, la pintamos
-            stars.push(
-                <StarIcon 
-                    key={i} 
-                    className="h-4 w-4" 
-                    fill={i < fullStars ? "#FFD700" : "none"} 
-                    stroke={i < fullStars ? "#FFD700" : "currentColor"}
-                />
-            );
-        }
-        
-        return stars;
+        router.post(`/games/save/${gameId}`);
     };
 
     return (
@@ -211,55 +188,11 @@ export default function Games({
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {juegos.map((juego) => (
-                        <div
-                            key={juego.id}
-                            className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
-                        >
-                            {/* Puntuación Metacritic con colores según el valor */}
-                            {juego.metacritic > 0 && (
-                                <div 
-                                    className={`absolute top-2 right-2 z-10 rounded px-2 py-1 font-bold text-sm ${
-                                        juego.metacritic >= 75 ? 'bg-green-600 ' : 
-                                        juego.metacritic >= 50 ? 'bg-yellow-500' : 
-                                        'bg-red-600 '
-                                    }`}>
-                                    {juego.metacritic}
-                                </div>
-                            )}
-
-                            <div className="h-48 overflow-hidden">
-                                {juego.background_image ? (
-                                    <img src={juego.background_image} alt={juego.name} className="h-full w-full object-cover" />
-                                ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
-                                        <span className="text-gray-400">Sin imagen</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-4">
-                                <h3 className="mb-2 line-clamp-2 text-lg font-bold">{juego.name}</h3>
-                                
-                                {/* Rating con estrellas - Movido debajo de la imagen */}
-                                <div className="mb-2 flex items-center space-x-0.5">
-                                    {renderStars(juego.rating)}
-                                </div>
-                                
-                                <div className="mt-2 flex items-center justify-between">
-                                    <div className="text-sm text-gray-600 dark:text-gray-300">
-                                        {juego.released ? new Date(juego.released).toLocaleDateString() : 'Fecha desconocida'}
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                <Button
-                                        onClick={() => handleSaveGame(juego.id)}
-                                        variant="outline"
-                                        className="w-full"
-                                    >
-                                       Añadir a Biblioteca
-                                    </Button>                                 
-                                </div>
-                            </div>
-                        </div>
+                        <GameCard 
+                            key={juego.id} 
+                            game={juego} 
+                            onSave={handleSaveGame} 
+                        />
                     ))}
                 </div>
 

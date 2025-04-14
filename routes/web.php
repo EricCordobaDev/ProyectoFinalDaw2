@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideojuegoController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,7 +16,11 @@ Route::get('/', function () {
 
 // Rutas públicas
 Route::get('games', [VideojuegoController::class, 'mostrarVideojuegos'])->name('games');
+Route::get('games/{game}', [VideojuegoController::class, 'show'])->name('games.show');
 Route::get('profile', [UserController::class, 'index'])->name('profile');
+
+// Rutas para reviews (acceso público para ver)
+Route::get('games/{game}/reviews', [ReviewController::class, 'index'])->name('games.reviews.index');
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
@@ -63,6 +68,11 @@ Route::middleware(['auth'])->group(function () {
     // Rutas de juegos
     Route::post('/games/save/{id}', [VideojuegoController::class, 'saveGame'])->name('games.save');
     Route::delete('/user/games/{game}', [UserController::class, 'destroyGame'])->name('user.games.destroy');
+    
+    // Rutas para reviews (protegidas)
+    Route::post('/games/{game}/reviews', [ReviewController::class, 'store'])->name('games.reviews.store');
+    Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('games.reviews.update');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('games.reviews.destroy');
 });
 
 require __DIR__.'/settings.php';
