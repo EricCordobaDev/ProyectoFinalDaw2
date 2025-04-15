@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -81,7 +82,8 @@ class PostController extends Controller
             'post' => $post,
             'comments' => $comments
         ]);
-    }
+    }  
+    
 
     /**
      * Like a post

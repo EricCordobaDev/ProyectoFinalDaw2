@@ -94,16 +94,8 @@ export default function GameCard({ game, onSave }: GameCardProps) {
                             className="w-full"
                         >
                             {game.saved_by_user ? 'En tu biblioteca' : 'Añadir a Biblioteca'}
-                        </Button>
+                        </Button>                        
                         
-                        <Link href={`/games/${game.id}/reviews`} onClick={handleButtonClick}>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                            >
-                                Ver Reviews
-                            </Button>
-                        </Link>
                     </div>
                 </div>
             </div>

@@ -7,9 +7,25 @@ import PostCard from '@/components/post-card';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { RefreshCcw } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { RefreshCcw, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { Skeleton } from '@/components/ui/skeleton';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,19 +60,16 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
     }, [posts]);
     
     const handleDelete = (postId: number) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
-            const form = document.createElement('form');
-            form.action = route('posts.destroy', postId);
-            form.method = 'POST';
-            form.innerHTML = `<input type="hidden" name="_token" value="${(document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content}" />
-                               <input type="hidden" name="_method" value="DELETE" />`;
-            document.body.appendChild(form);
-            form.submit();
-        }
+        const form = document.createElement('form');
+        form.action = route('posts.destroy', postId);
+        form.method = 'POST';
+        form.innerHTML = `<input type="hidden" name="_token" value="${(document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content}" />
+                           <input type="hidden" name="_method" value="DELETE" />`;
+        document.body.appendChild(form);
+        form.submit();
     };
     
     const handleLike = (postId: number) => {
-        // Actualizamos primero el estado local para dar feedback inmediato al usuario
         setLocalPosts(prevPosts => 
             prevPosts.map(post => {
                 if (post.id === postId) {
@@ -71,17 +84,14 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
             })
         );
         
-        // Luego realizamos la petición en segundo plano
         router.visit(route('posts.like', postId), {
             method: 'post',
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
-                // Manejo exitoso, no hacer nada visible al usuario
             },
             onError: (errors) => {
                 console.error('Error:', errors);
-                // Revertimos el cambio en caso de error
                 setLocalPosts(prevPosts => 
                     prevPosts.map(post => {
                         if (post.id === postId) {
@@ -119,44 +129,52 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                         <CardContent className="p-4 sm:p-6">
                             <PostForm />
                         </CardContent>
-                    </Card>
+                    </Card>                    
+                   
                     
-                    <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-2xl font-semibold tracking-tight">Tu feed</h2>                       
-                    </div>
-                    
-                
-                            <AnimatePresence>
-                                {localPosts.length > 0 ? (
-                                    <motion.div className="space-y-4">
-                                        {localPosts.map((post) => (
-                                            <motion.div 
-                                                key={post.id}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -20 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                <PostCard 
-                                                    post={post} 
-                                                    currentUserId={currentUserId}
-                                                    onDelete={handleDelete}
-                                                    onLike={handleLike}
-                                                />
-                                            </motion.div>
-                                        ))}
-                                    </motion.div>
-                                ) : (
-                                    <motion.div 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="rounded-lg border border-dashed p-10 text-center"
-                                    >
-                                        <p className="text-muted-foreground">No hay publicaciones todavía. ¡Sé el primero en publicar algo!</p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                       
+                    <ScrollArea className="h-[calc(100vh-300px)]">
+                        <AnimatePresence>
+                            {localPosts.length > 0 ? (
+                                <motion.div className="space-y-4">
+                                    {localPosts.map((post) => (
+                                        <motion.div 
+                                            key={post.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <PostCard 
+                                                post={post} 
+                                                currentUserId={currentUserId}
+                                                onDelete={handleDelete}
+                                                onLike={handleLike}
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </motion.div>
+                            ) : (
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                >
+                                    <Card className="border-dashed">
+                                        <CardHeader>
+                                            <CardTitle className="text-center">Sin publicaciones</CardTitle>
+                                            <CardDescription className="text-center">
+                                                No hay publicaciones todavía. ¡Sé el primero en publicar algo!
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardFooter className="justify-center pb-6">
+                                            <Button variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                                                Crear publicación
+                                            </Button>
+                                        </CardFooter>
+                                    </Card>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </ScrollArea>
                 </div>
             </div>
           

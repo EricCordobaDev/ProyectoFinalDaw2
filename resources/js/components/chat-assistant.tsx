@@ -1,4 +1,26 @@
 import { useState, useEffect, FormEvent, useRef, ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+
+import { 
+    Tooltip, 
+    TooltipContent, 
+    TooltipProvider, 
+    TooltipTrigger 
+} from '@/components/ui/tooltip';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
+import {
+    Drawer,
+     DrawerContent,
+    DrawerDescription,   
+    DrawerHeader,
+    DrawerTitle,
+ 
+} from "@/components/ui/drawer";
+import { cn } from "@/lib/utils";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -61,7 +83,7 @@ export default function ChatAssistant() {
     setMessages([
       {
         role: 'assistant',
-        content: 'Hola, soy tu asistente especializado en videojuegos. ¿En qué puedo ayudarte hoy?'
+        content: 'Hola, soy GameLive, tu asistente especializado en videojuegos. ¿En qué puedo ayudarte hoy?'
       }
     ]);
   }, []);
@@ -88,7 +110,6 @@ export default function ChatAssistant() {
             method: "POST",
             headers: {
                "Authorization": "Bearer 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",
-                
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -96,7 +117,26 @@ export default function ChatAssistant() {
                 messages: [
                     {
                         role: "system",
-                        content: "Eres un asistente especializado en videojuegos. Proporciona respuestas útiles sobre el mundo de los videojuegos."
+                        content: `Eres gamelive, un asistente avanzado especializado en videojuegos con conocimiento experto sobre:
+1. Historia de los videojuegos y evolución de consolas
+2. Géneros, mecánicas y diseño de juegos
+3. Juegos populares, clásicos y títulos independientes
+4. Estrategias, trucos y guías para superar niveles difíciles
+5. Recomendaciones personalizadas basadas en preferencias
+6. Noticias y tendencias actuales en la industria
+7. Desarrolladores, estudios y personalidades importantes
+8. Eventos relevantes como E3, Gamescom y Game Awards
+
+Responde de manera conversacional y amigable. Incluye detalles específicos cuando sea apropiado. Cuando recomiendes juegos, explica por qué podrían gustarle al usuario según sus preferencias.
+
+Formateo:
+- Usa **texto en negrita** para títulos de juegos y conceptos importantes
+- Usa listas con asteriscos (*) para enumerar opciones o recomendaciones
+- Limita tus respuestas a 3-4 párrafos como máximo
+
+Si no conoces la respuesta, reconócelo honestamente y ofrece alternativas relacionadas. Si el usuario solicita información no relacionada con videojuegos, responde que estás especializado en videojuegos pero tratarás de ayudar.
+
+Fecha actual: 15 de abril de 2025.`
                     },
                     ...messages.map(msg => ({
                         role: msg.role,
@@ -124,148 +164,251 @@ export default function ChatAssistant() {
     }
   };
 
+  // Versión móvil usa Drawer, versión desktop usa Card flotante
+  const isDesktop = typeof window !== 'undefined' ? window.innerWidth >= 768 : false;
+
   return (
     <>
-      {/* Chat button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center group"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-          />
-        </svg>
-        <span className="ml-2 group-hover:opacity-100 transition-opacity duration-300 hidden sm:inline">Asistente IA</span>
-      </button>
+      {/* Botón de chat con Tooltip */}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => setIsOpen(true)}
+              size="icon"
+              className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg transition-all duration-300 ease-in-out"
+              variant="default"
+            >
+              <MessageCircle className="h-6 w-6" />
+              <span className="sr-only">Abrir asistente IA</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Asistente IA de Videojuegos</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
-      {/* Chat window */}
-      <div
-        className={`fixed bottom-6 right-6 w-full sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transition-all duration-500 ease-in-out transform ${
-          isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
-        } flex flex-col`}
-        style={{ 
-          maxWidth: "calc(100vw - 32px)", 
-          maxHeight: "min(90vh, calc(100vh - 12rem))" // Ajusta proporcionalmente según el tamaño de la pantalla
-        }}
-      >
-        <div className="bg-indigo-600 text-white p-4 flex justify-between items-center shadow-md">
-          <div className="flex items-center">
-            <div className="bg-white rounded-full p-1 mr-3">
-              <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                <path fill="currentColor" d="M192 64C86 64 0 150 0 256S86 448 192 448h85.2c7 0 13.7-3 18.5-8.2l15.2-16.8c14.3-15.8 43.5-15.8 57.8 0l15.2 16.8c4.8 5.2 11.5 8.2 18.5 8.2H448c106 0 192-86 192-192S554 64 448 64H192zm128 64c0 8.8-7.2 16-16 16s-16-7.2-16-16s7.2-16 16-16s16 7.2 16 16zm-96 0c0 8.8-7.2 16-16 16s-16-7.2-16-16s7.2-16 16-16s16 7.2 16 16zm288 0c0 8.8-7.2 16-16 16s-16-7.2-16-16s7.2-16 16-16s16 7.2 16 16zm-96 0c0 8.8-7.2 16-16 16s-16-7.2-16-16s7.2-16 16-16s16 7.2 16 16z"/>
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold">Asistente Gamer IA</h2>
-          </div>
-          <button 
-            onClick={() => setIsOpen(false)} 
-            className="text-white hover:text-gray-200 p-1 rounded-full hover:bg-indigo-500 transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        
-        <div className="h-80 overflow-y-auto p-4 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 flex-grow">
-          {messages.map((message, index) => (
-            <div 
-              key={index} 
-              className={`mb-4 flex ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}
-            >
-              <div className={`rounded-xl p-3 max-w-[85%] shadow-sm ${
-                message.role === 'user' 
-                  ? 'bg-indigo-100 dark:bg-indigo-900 rounded-tr-none' 
-                  : 'bg-white dark:bg-gray-800 rounded-tl-none border border-gray-200 dark:border-gray-700'
-              }`}>
-                <div className="flex items-center mb-1">
-                  <span className="inline-block mr-2">
-                    {message.role === 'user' 
-                      ? <span className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs">👤</span> 
-                      : <span className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs">🤖</span>}
-                  </span>
-                  <span className="font-medium text-xs text-gray-500 dark:text-gray-400">
-                    {message.role === 'user' ? 'Tú' : 'Asistente IA'}
-                  </span>
+      {/* Versión móvil con Drawer */}
+      {!isDesktop && (
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <DrawerContent className="h-[85dvh]">
+            <DrawerHeader className="border-b bg-primary text-primary-foreground">
+              <DrawerTitle className="flex items-center gap-2">
+                <Avatar className="h-8 w-8 bg-background/20">
+                  <AvatarFallback>
+                    <Bot className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+                Asistente Gamer IA
+              </DrawerTitle>
+              <DrawerDescription className="text-primary-foreground/90">
+                Pregunta sobre juegos, consejos o recomendaciones
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="flex h-[calc(85dvh-10rem)] flex-col">
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4 pb-4">
+                  {messages.map((message, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex ${
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                      }`}
+                    >
+                      <div 
+                        className={cn(
+                          "relative max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm",
+                          message.role === 'user' 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted text-muted-foreground"
+                        )}
+                      >
+                        <div className="mb-1 flex items-center gap-2">
+                          <Avatar className="h-5 w-5">
+                            {message.role === 'user' ? (
+                              <AvatarFallback className="bg-background/40 text-primary-foreground">
+                                <User className="h-3 w-3" />
+                              </AvatarFallback>
+                            ) : (
+                              <AvatarFallback className="bg-background/40 text-muted-foreground">
+                                <Bot className="h-3 w-3" />
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
+                          <span className="text-xs font-medium">
+                            {message.role === 'user' ? 'Tú' : 'Asistente IA'}
+                          </span>
+                        </div>
+                        <div className="whitespace-pre-wrap">
+                          {formatMessageText(message.content)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="relative max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm shadow-sm text-muted-foreground">
+                        <div className="mb-1 flex items-center gap-2">
+                          <Avatar className="h-5 w-5">
+                            <AvatarFallback className="bg-background/40 text-muted-foreground">
+                              <Bot className="h-3 w-3" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-xs font-medium">Asistente IA</span>
+                        </div>
+                        <div className="flex space-x-1">
+                          <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '0ms' }}></div>
+                          <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '150ms' }}></div>
+                          <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '300ms' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
                 </div>
-                <div className="pl-8">
-                  {/* Reemplazamos el texto plano con el formateado */}
-                  <div className="whitespace-pre-wrap">
-                    {formatMessageText(message.content)}
-                  </div>
-                </div>
+              </ScrollArea>
+              
+              <div className="border-t p-4">
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <Input
+                    type="text"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Enviar un mensaje..."
+                    className="flex-1"
+                    disabled={isLoading}
+                  />
+                  <Button 
+                    type="submit" 
+                    size="icon" 
+                    disabled={isLoading || !userInput.trim()}
+                  >
+                    <Send className="h-4 w-4" />
+                    <span className="sr-only">Enviar mensaje</span>
+                  </Button>
+                </form>
               </div>
             </div>
-          ))}
-          {isLoading && (
-            <div className="mb-4 flex justify-start">
-              <div className="rounded-xl p-3 max-w-[85%] shadow-sm bg-white dark:bg-gray-800 rounded-tl-none border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center mb-1">
-                  <span className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs mr-2">🤖</span>
-                  <span className="font-medium text-xs text-gray-500 dark:text-gray-400">Asistente IA</span>
-                </div>
-                <div className="pl-8 flex items-center">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 rounded-full bg-indigo-600 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-indigo-600 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-indigo-600 animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                  </div>
-                </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      {/* Versión desktop con Card flotante */}
+      {isDesktop && (
+        <Card 
+          className={`fixed bottom-20 right-6 w-96 overflow-hidden shadow-lg transition-all duration-300 ${
+            isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+        >
+          <CardHeader className="border-b bg-primary p-4 text-primary-foreground">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Avatar className="h-8 w-8 bg-background/20">
+                  <AvatarFallback>
+                    <Bot className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <CardTitle className="text-lg">Asistente Gamer IA</CardTitle>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-lg shadow-sm">
-            <input
-              type="text"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="Enviar un mensaje..."            
-              className="flex-grow px-4 py-3 bg-transparent focus:outline-none text-gray-800 dark:text-gray-200"
-            />
-            <button
-              type="submit"
-              className={`bg-indigo-600 text-white p-2.5 rounded-lg mr-1 transition duration-300 ease-in-out ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-indigo-700'}`}
-              disabled={isLoading}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsOpen(false)}
+                className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/10 rounded-full"
               >
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-        </form>
-      </div>
+                <X className="h-4 w-4" />
+                <span className="sr-only">Cerrar</span>
+              </Button>
+            </div>
+          </CardHeader>
+          
+          <ScrollArea className="h-80 w-full">
+            <CardContent className="p-4">
+              <div className="space-y-4">
+                {messages.map((message, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    <div 
+                      className={cn(
+                        "relative max-w-[80%] rounded-lg px-3 py-2 text-sm shadow-sm",
+                        message.role === 'user' 
+                          ? "bg-primary text-primary-foreground" 
+                          : "bg-muted text-muted-foreground"
+                      )}
+                    >
+                      <div className="mb-1 flex items-center gap-2">
+                        <Avatar className="h-5 w-5">
+                          {message.role === 'user' ? (
+                            <AvatarFallback className="bg-background/40 text-primary-foreground">
+                              <User className="h-3 w-3" />
+                            </AvatarFallback>
+                          ) : (
+                            <AvatarFallback className="bg-background/40 text-muted-foreground">
+                              <Bot className="h-3 w-3" />
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <span className="text-xs font-medium">
+                          {message.role === 'user' ? 'Tú' : 'Asistente IA'}
+                        </span>
+                      </div>
+                      <div className="whitespace-pre-wrap">
+                        {formatMessageText(message.content)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="relative max-w-[80%] rounded-lg bg-muted px-3 py-2 text-sm shadow-sm text-muted-foreground">
+                      <div className="mb-1 flex items-center gap-2">
+                        <Avatar className="h-5 w-5">
+                          <AvatarFallback className="bg-background/40 text-muted-foreground">
+                            <Bot className="h-3 w-3" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs font-medium">Asistente IA</span>
+                      </div>
+                      <div className="flex space-x-1">
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '0ms' }}></div>
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '150ms' }}></div>
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </CardContent>
+          </ScrollArea>
+          
+          <CardFooter className="border-t p-3">
+            <form onSubmit={handleSubmit} className="flex w-full gap-2">
+              <Input
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                placeholder="Enviar un mensaje..."
+                className="flex-1"
+                disabled={isLoading}
+              />
+              <Button 
+                type="submit" 
+                size="icon" 
+                disabled={isLoading || !userInput.trim()}
+              >
+                <Send className="h-4 w-4" />
+                <span className="sr-only">Enviar mensaje</span>
+              </Button>
+            </form>
+          </CardFooter>
+        </Card>
+      )}
     </>
   );
 }
