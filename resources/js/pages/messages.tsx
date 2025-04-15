@@ -25,7 +25,6 @@ import {
     DialogFooter, 
     DialogHeader, 
     DialogTitle,
-    DialogTrigger
 } from '@/components/ui/dialog';
 import { 
     Tooltip, 
@@ -34,6 +33,7 @@ import {
     TooltipTrigger 
 } from '@/components/ui/tooltip';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import AiChatBot from '@/components/chat-assistant';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -369,6 +369,7 @@ export default function Messages() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <AiChatBot />
         </AppLayout>
     );
 }

@@ -3,7 +3,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Gamepad2, Home, LogOut, MessageSquare, UserCircle } from 'lucide-react';
+import { Gamepad2, Home, LogOut, MessageSquare, Newspaper, UserCircle } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -22,6 +22,11 @@ const mainNavItems: NavItem[] = [
         url: '/messages',
         icon: MessageSquare,
     },
+     {
+          title: 'Noticias',
+          url: '/news',
+          icon: Newspaper,
+     },
 ];
 
 export function AppSidebar() {

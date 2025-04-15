@@ -73,6 +73,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/games/{game}/reviews', [ReviewController::class, 'store'])->name('games.reviews.store');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('games.reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('games.reviews.destroy');
+
+     // Rutas de noticias
+     Route::get('/news', function() {
+          return Inertia::render('news');
+     })->name('news.index');
+     Route::get('/api/news', [App\Http\Controllers\NewsController::class, 'getNews'])->name('api.news');
+     // Ruta para mostrar una noticia específica
+     Route::get('/news/{id}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+
 });
 
 require __DIR__.'/settings.php';
