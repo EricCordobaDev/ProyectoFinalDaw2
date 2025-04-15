@@ -1,9 +1,39 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { Trash2, Send, UserPlus } from 'lucide-react';
+import { Trash2, Send, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { cn } from '@/lib/utils';
+import { 
+    Card, 
+    CardContent, 
+    CardFooter,
+    CardHeader
+} from '@/components/ui/card';
+import { 
+    Avatar, 
+    AvatarFallback, 
+    AvatarImage 
+} from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { 
+    Dialog, 
+    DialogContent, 
+    DialogDescription, 
+    DialogFooter, 
+    DialogHeader, 
+    DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog';
+import { 
+    Tooltip, 
+    TooltipContent, 
+    TooltipProvider, 
+    TooltipTrigger 
+} from '@/components/ui/tooltip';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,8 +74,9 @@ export default function Messages() {
     const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
-    const [showNewMessage, setShowNewMessage] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedUsers, setSelectedUsers] = useState<Contact[]>([]);
     
     // Cargar mensajes cuando se selecciona un contacto
     useEffect(() => {
@@ -121,62 +152,55 @@ export default function Messages() {
                 <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
 
-            <div className="flex h-full flex-1 flex-col rounded-xl p-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[calc(100vh-200px)]">
-                    {/* Panel de contactos */}
-                    <div className="md:col-span-1 bg-white dark:bg-gray-800 rounded-lg shadow">
-                        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                            <h2 className="text-lg font-semibold">Contactos</h2>
-                            <button 
-                                onClick={() => setShowNewMessage(!showNewMessage)}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
-                                title="Nuevo mensaje"
-                            >
-                                <UserPlus size={20} />
-                            </button>
-                        </div>
-                        
-                        {showNewMessage && (
-                            <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                                <input
-                                    type="text"
-                                    placeholder="Buscar usuario..."
-                                    className="w-full p-2 border rounded"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <div className="mt-2 max-h-40 overflow-y-auto">
-                                    {filteredUsers.map(user => (
-                                        <div 
-                                            key={user.id} 
-                                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center"
-                                            onClick={() => {
-                                                setSelectedContact(user);
-                                                setShowNewMessage(false);
-                                            }}
-                                        >
-                                            {user.image ? (
-                                                <img 
-                                                    src={`/storage/${user.image}`} 
-                                                    alt={`${user.name} avatar`}
-                                                    className="w-8 h-8 rounded-full mr-2 object-cover" 
-                                                />
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-2">
-                                                    {user.name.charAt(0).toUpperCase()}
-                                                </div>
-                                            )}
-                                            <div>
-                                                <div className="font-medium">{user.name}</div>
-                                                <div className="text-sm text-gray-500">{user.email}</div>
-                                            </div>
-                                        </div>
-                                    ))}
+            <div className="flex h-full flex-1 flex-col p-4">
+                <Card className="h-[calc(100vh-200px)]">
+                    <CardHeader className="flex flex-row items-center border-b p-4">
+                        <div className="flex items-center space-x-4">
+                            {selectedContact ? (
+                                <>
+                                    <Avatar>
+                                        {selectedContact.image ? (
+                                            <AvatarImage 
+                                                src={`/storage/${selectedContact.image}`} 
+                                                alt={`${selectedContact.name} avatar`} 
+                                            />
+                                        ) : (
+                                            <AvatarFallback>{selectedContact.name[0].toUpperCase()}</AvatarFallback>
+                                        )}
+                                    </Avatar>
+                                    <div>
+                                        <p className="text-sm font-medium leading-none">{selectedContact.name}</p>
+                                        <p className="text-sm text-muted-foreground">{selectedContact.email}</p>
+                                    </div>
+                                </>
+                            ) : (
+                                <div>
+                                    <p className="text-sm font-medium leading-none">Mensajes</p>
+                                    <p className="text-sm text-muted-foreground">Selecciona un contacto para chatear</p>
                                 </div>
-                            </div>
-                        )}
-                        
-                        <div className="overflow-y-auto h-[calc(100%-56px)]">
+                            )}
+                        </div>
+                        <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        size="icon"
+                                        variant="outline"
+                                        className="ml-auto rounded-full"
+                                        onClick={() => setDialogOpen(true)}
+                                    >
+                                        <Plus />
+                                        <span className="sr-only">Nuevo mensaje</span>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent sideOffset={10}>Nuevo mensaje</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </CardHeader>
+                    
+                    <CardContent className="flex flex-col md:flex-row p-0 h-[calc(100%-140px)]">
+                        {/* Lista de contactos - Solo visible en pantallas medianas y grandes */}
+                        <div className="hidden md:flex flex-col w-1/3 border-r h-full overflow-y-auto">
                             {contacts.length > 0 ? (
                                 contacts.map(contact => (
                                     <div 
@@ -186,17 +210,16 @@ export default function Messages() {
                                         }`}
                                         onClick={() => setSelectedContact(contact)}
                                     >
-                                        {contact.image ? (
-                                            <img 
-                                                src={`/storage/${contact.image}`} 
-                                                alt={`${contact.name} avatar`}
-                                                className="w-10 h-10 rounded-full mr-3 object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                                                {contact.name.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
+                                        <Avatar className="mr-3">
+                                            {contact.image ? (
+                                                <AvatarImage 
+                                                    src={`/storage/${contact.image}`} 
+                                                    alt={`${contact.name} avatar`}
+                                                />
+                                            ) : (
+                                                <AvatarFallback>{contact.name.charAt(0).toUpperCase()}</AvatarFallback>
+                                            )}
+                                        </Avatar>
                                         <div>
                                             <div className="font-semibold">{contact.name}</div>
                                             <div className="text-sm text-gray-500">{contact.email}</div>
@@ -209,102 +232,143 @@ export default function Messages() {
                                 </div>
                             )}
                         </div>
-                    </div>
-                    
-                    {/* Panel de mensajes */}
-                    <div className="md:col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col">
-                        {selectedContact ? (
-                            <>
-                                {/* Cabecera del chat */}
-                                <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-                                    {selectedContact.image ? (
-                                        <img 
-                                            src={`/storage/${selectedContact.image}`} 
-                                            alt={`${selectedContact.name} avatar`}
-                                            className="w-10 h-10 rounded-full mr-3 object-cover" 
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                                            {selectedContact.name.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
-                                    <div>
-                                        <div className="font-semibold">{selectedContact.name}</div>
-                                        <div className="text-sm text-gray-500">{selectedContact.email}</div>
-                                    </div>
-                                </div>
-                                
-                                {/* Área de mensajes */}
-                                <div id="messages-container" className="flex-1 p-4 overflow-y-hidden">
+                        
+                        {/* Área de mensajes */}
+                        <div className="flex-1 flex flex-col h-full">
+                            <ScrollArea className="flex-1 p-4" id="messages-container">
+                                <div className="space-y-4">
                                     {messages.length > 0 ? (
-                                        messages.map(message => (
-                                            <div 
-                                                key={message.id} 
-                                                className={`mb-4 flex ${
-                                                    message.transmitter_id === currentUser.id ? 'justify-end' : 'justify-start'
-                                                }`}
+                                        messages.map((message) => (
+                                            <div
+                                                key={message.id}
+                                                className={cn(
+                                                    "group relative flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                                    message.transmitter_id === currentUser.id
+                                                        ? "ml-auto bg-primary text-primary-foreground"
+                                                        : "bg-muted"
+                                                )}
                                             >
-                                                <div className={`relative max-w-3/4 p-3 rounded-lg ${
-                                                    message.transmitter_id === currentUser.id 
-                                                        ? 'bg-blue-500 text-white' 
-                                                        : 'bg-gray-100 dark:bg-gray-700'
-                                                }`}>
-                                                    <p>{message.message}</p>
-                                                    <div className="text-xs mt-1 text-right">
-                                                        {new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                                    </div>
-                                                    
-                                                    {message.transmitter_id === currentUser.id && (
-                                                        <button 
-                                                            onClick={() => handleDeleteMessage(message.id)}
-                                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
-                                                            title="Eliminar mensaje"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    )}
+                                                {message.message}
+                                                <div className="text-xs text-right opacity-70">
+                                                    {new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                                 </div>
+                                                
+                                                {message.transmitter_id === currentUser.id && (
+                                                    <button 
+                                                        onClick={() => handleDeleteMessage(message.id)}
+                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        title="Eliminar mensaje"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                )}
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="text-center text-gray-500 my-4">
-                                            No hay mensajes aún. ¡Comienza la conversación!
+                                        <div className="text-center text-muted-foreground my-4">
+                                            {selectedContact ? 
+                                                "No hay mensajes aún. ¡Comienza la conversación!" : 
+                                                "Selecciona un contacto para ver los mensajes"}
                                         </div>
                                     )}
                                 </div>
-                                
-                                {/* Formulario para enviar mensajes */}
-                                <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 dark:border-gray-700">
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            value={newMessage}
-                                            onChange={(e) => setNewMessage(e.target.value)}
-                                            placeholder="Escribe un mensaje..."
-                                            className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg"
-                                        />
-                                        <button 
-                                            type="submit"
-                                            className="bg-blue-500 text-white p-2 rounded-lg"
-                                            disabled={!newMessage.trim()}
-                                        >
-                                            <Send size={20} />
-                                        </button>
-                                    </div>
-                                </form>
-                            </>
-                        ) : (
-                            <div className="flex items-center justify-center flex-1">
-                                <div className="text-center text-gray-500">
-                                    <div className="text-xl mb-2">Selecciona un contacto</div>
-                                    <p>Elige un contacto para iniciar una conversación o crea uno nuevo.</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                            </ScrollArea>
+                        </div>
+                    </CardContent>
+                    
+                    <CardFooter className="border-t p-3">
+                        <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
+                            <Input
+                                id="message"
+                                placeholder="Escribe tu mensaje..."
+                                className="flex-1"
+                                autoComplete="off"
+                                value={newMessage}
+                                onChange={(event) => setNewMessage(event.target.value)}
+                                disabled={!selectedContact}
+                            />
+                            <Button 
+                                type="submit" 
+                                size="icon" 
+                                disabled={!newMessage.trim() || !selectedContact}
+                            >
+                                <Send />
+                                <span className="sr-only">Enviar</span>
+                            </Button>
+                        </form>
+                    </CardFooter>
+                </Card>
             </div>
-        
+            
+            {/* Dialog para nuevo mensaje */}
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Nuevo mensaje</DialogTitle>
+                        <DialogDescription>
+                            Busca usuarios para iniciar una nueva conversación.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="flex flex-col">
+                        <div className="py-2">
+                            <Input
+                                placeholder="Buscar usuario..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="mb-2"
+                            />
+                        </div>
+                        
+                        <ScrollArea className="h-60">
+                            <div className="space-y-1">
+                                {filteredUsers.length > 0 ? (
+                                    filteredUsers.map((user) => (
+                                        <div
+                                            key={user.id}
+                                            className="flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer"
+                                            onClick={() => {
+                                                setSelectedContact(user);
+                                                setDialogOpen(false);
+                                            }}
+                                        >
+                                            <div className="flex items-center">
+                                                <Avatar className="mr-2">
+                                                    {user.image ? (
+                                                        <AvatarImage 
+                                                            src={`/storage/${user.image}`}
+                                                            alt={`${user.name} avatar`}
+                                                        />
+                                                    ) : (
+                                                        <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
+                                                    )}
+                                                </Avatar>
+                                                <div>
+                                                    <p className="text-sm font-medium">{user.name}</p>
+                                                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center p-4 text-muted-foreground">
+                                        No se encontraron usuarios
+                                    </div>
+                                )}
+                            </div>
+                        </ScrollArea>
+                    </div>
+                    
+                    <DialogFooter className="sm:justify-end">
+                        <Button
+                            variant="outline"
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            Cancelar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

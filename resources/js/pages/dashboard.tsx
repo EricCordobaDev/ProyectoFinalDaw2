@@ -123,7 +123,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
            <Head title="Inicio">
                 <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
-            <div className="flex h-full flex-1 flex-col gap-4 p-4 md:p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 md:p-5">
                 <div className="mx-auto w-full max-w-3xl">
                     <Card className="mb-6 border-none shadow-sm bg-gradient-to-br from-background to-muted/40">
                         <CardContent className="p-4 sm:p-6">
@@ -132,7 +132,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                     </Card>                    
                    
                     
-                    <ScrollArea className="h-[calc(100vh-300px)]">
+                    <ScrollArea className="h-[calc(95vh-300px)]">
                         <AnimatePresence>
                             {localPosts.length > 0 ? (
                                 <motion.div className="space-y-4">
