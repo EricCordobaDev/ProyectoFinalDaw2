@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,6 +29,26 @@ class PostController extends Controller
     public function create()
     {
         //
+    }
+
+    public function show(Post $post)
+    {
+        $user = Auth::user();
+        
+        // Cargar el post con su usuario y comentarios (ordenados por fecha)
+        $post->load(['user']);
+        $post->liked_by_user = $post->isLikedBy($user);
+        
+        // Cargar comentarios con sus autores
+        $comments = Comment::where('post_id', $post->id)
+            ->with('user')
+            ->orderByDesc('created_at')
+            ->get();
+            
+        return Inertia::render('posts/show', [
+            'post' => $post,
+            'comments' => $comments
+        ]);
     }
 
     /**
@@ -55,11 +76,9 @@ class PostController extends Controller
         
         $post->save();
 
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'post' => $post]);
-        }
-
-        return redirect()->back();
+        // Renderizar Dashboard con nuevos posts para actualización SPA sin recarga completa
+        $posts = Post::with('user')->orderByDesc('created_at')->get();
+        return Inertia::render('dashboard', ['posts' => $posts]);
     }  
 
     

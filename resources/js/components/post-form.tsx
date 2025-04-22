@@ -91,7 +91,7 @@ export default function PostForm() {
         }
         
         // Simular progreso de carga
-        const progressInterval = setInterval(() => {
+        let progressInterval = setInterval(() => {
             setUploadProgress(prev => {
                 if (prev >= 95) {
                     clearInterval(progressInterval);
@@ -101,7 +101,8 @@ export default function PostForm() {
             });
         }, 100);
         
-        router.post('/posts', formData, {
+        router.post(route('posts.store'), formData, {
+            forceFormData: true,
             onSuccess: () => {
                 clearInterval(progressInterval);
                 setUploadProgress(100);
@@ -119,6 +120,11 @@ export default function PostForm() {
                 }, 500);
             },
             onError: () => {
+                clearInterval(progressInterval);
+                setIsSubmitting(false);
+                setUploadProgress(0);
+            },
+            onFinish: () => {
                 clearInterval(progressInterval);
                 setIsSubmitting(false);
                 setUploadProgress(0);
