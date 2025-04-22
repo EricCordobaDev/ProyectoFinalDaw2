@@ -3,8 +3,10 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Gamepad2, Home, LogOut, MessageSquare, Newspaper, UserCircle } from 'lucide-react';
+import { Gamepad2, Home, LogOut, MessageSquare, Newspaper } from 'lucide-react';
 import AppLogo from './app-logo';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { usePage } from '@inertiajs/react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -31,6 +33,8 @@ const mainNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const cleanup = useMobileNavigation();
+    const { auth } = usePage().props as any;
+    const user = auth?.user;
 
     return (
         <Sidebar collapsible="icon" variant="floating">
@@ -54,8 +58,18 @@ export function AppSidebar() {
                 <SidebarMenu>                  
                     <SidebarMenuButton size="lg" asChild>
                         <Link method="get" href={route('profile')} as="button" onClick={cleanup}>
-                            <UserCircle className="mr-2" />
-                            Perfil
+                            <div className="flex items-center">
+                                <Avatar className="h-6 w-6 mr-2">
+                                    {user?.image ? (
+                                        <AvatarImage src={`/storage/${user.image}`} alt={`${user.name} avatar`} />
+                                    ) : (
+                                        <AvatarFallback className="bg-primary/10 text-primary">
+                                            {user?.name?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    )}
+                                </Avatar>
+                                <span>Perfil</span>
+                            </div>
                         </Link>
                     </SidebarMenuButton>
 

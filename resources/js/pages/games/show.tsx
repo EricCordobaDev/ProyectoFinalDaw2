@@ -94,7 +94,12 @@ export default function GameDetails({ game }: { game: Game }) {
             return;
         }
         
-        router.post(`/games/save/${game.id}`);
+        // Si el juego ya está en la biblioteca, eliminarlo, si no, guardarlo
+        if (game.saved_by_user) {
+            router.delete(`/user/games/${game.id}`);
+        } else {
+            router.post(`/games/save/${game.id}`);
+        }
     };
 
     return (
@@ -127,7 +132,7 @@ export default function GameDetails({ game }: { game: Game }) {
                                         variant={game.saved_by_user ? "outline" : "default"}
                                         className="w-full"
                                     >
-                                        {game.saved_by_user ? 'En tu biblioteca' : 'Añadir a Biblioteca'}
+                                        {game.saved_by_user ? 'Eliminar de la Biblioteca' : 'Añadir a Biblioteca'}
                                     </Button>
                                     
                                     <Link href={`/games/${game.id}/reviews`}>
@@ -229,7 +234,7 @@ export default function GameDetails({ game }: { game: Game }) {
                                             {game.name} es un videojuego {genres && genres.length > 0 ? `de ${genres[0]}` : ''} 
                                             {platforms && platforms.length > 0 ? ` disponible para ${platforms.slice(0, 3).join(', ')}${platforms.length > 3 ? ' y otras plataformas' : ''}` : ''}.
                                             {game.released ? ` Fue lanzado el ${new Date(game.released).toLocaleDateString()}.` : ''}
-                                            {game.metacritic ? ` Ha recibido una puntuación de ${game.metacritic} en Metacritic.` : ''}
+                                            {game.metacritic ? ` Tiene una puntuación de ${game.metacritic} en Metacritic.` : ''}
                                         </p>
                                     </div>
                                 </TabsContent>

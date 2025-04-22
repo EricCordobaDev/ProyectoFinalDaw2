@@ -7,25 +7,9 @@ import PostCard from '@/components/post-card';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { RefreshCcw, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
-import { Skeleton } from '@/components/ui/skeleton';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -164,12 +148,7 @@ export default function Dashboard({ posts = [] }: { posts: Post[] }) {
                                             <CardDescription className="text-center">
                                                 No hay publicaciones todavía. ¡Sé el primero en publicar algo!
                                             </CardDescription>
-                                        </CardHeader>
-                                        <CardFooter className="justify-center pb-6">
-                                            <Button variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                                                Crear publicación
-                                            </Button>
-                                        </CardFooter>
+                                        </CardHeader>                                       
                                     </Card>
                                 </motion.div>
                             )}

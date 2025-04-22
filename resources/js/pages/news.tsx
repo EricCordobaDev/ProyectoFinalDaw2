@@ -48,7 +48,7 @@ export default function News() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Noticias de Videojuegos">
+            <Head title="Noticias">
                 <link rel="icon" href="icono.png" type="image/x-icon" />
             </Head>
 

@@ -35,15 +35,20 @@ class VideojuegoController extends Controller
          }
          
          $juegos = $query->paginate($pageSize);
-         
-         return inertia('games', [
-             'juegos' => $juegos->items(),
+         $user = Auth::user();
+         // Añadir flag saved_by_user a cada juego
+         $items = collect($juegos->items())->map(function($game) use ($user) {
+             $saved = $user ? $user->games()->where('game_id', $game->id)->exists() : false;
+             return array_merge($game->toArray(), ['saved_by_user' => $saved]);
+         })->toArray();
+         return Inertia::render('games', [
+             'juegos' => $items,
              'paginacion' => [
                  'current_page' => $juegos->currentPage(),
                  'total_pages' => $juegos->lastPage(),
                  'total' => $juegos->total()
              ],
-             'searchTerm' => $searchTerm           
+             'searchTerm' => $searchTerm
          ]);
      }
 

@@ -31,7 +31,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        patch(route('profile.update'), { forceFormData: true });
     };
 
     return (
@@ -40,7 +40,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Información de perfil" description="Actualiza tu  y dirección de correo electrónico" />
+                    <HeadingSmall title="Información de perfil" description="Actualiza tu nombre de usuario, dirección de correo electrónico y foto de perfil" />
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
@@ -81,7 +81,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 type="file"
                                 accept="image/*"
                                 className="file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold"
-                                onChange={(e) => setData('image', e.target.files)}
+                                onChange={(e) => setData('image', e.target.files?.[0] ?? null)}
                             />
                             <InputError message={errors.image} className="mt-2" />
                         </div>

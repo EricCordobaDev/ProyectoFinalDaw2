@@ -25,8 +25,8 @@ class ProfileController extends Controller
             'auth' => [
                 'user' => array_merge($request->user()->toArray(), [
                     'games' => $request->user()->games,
-                    'profile_photo_url' => $request->user()->profile_photo_path ? 
-                        Storage::url($request->user()->profile_photo_path) : null
+                    'profile_photo_url' => $request->user()->image ? 
+                        Storage::url($request->user()->image) : null
                 ])
             ]
         ]);
@@ -46,13 +46,13 @@ class ProfileController extends Controller
         // Procesar la imagen de perfil si se proporcionó una
         if ($request->hasFile('image')) {
             // Eliminar la foto anterior si existe
-            if ($request->user()->profile_photo_path) {
-                Storage::disk('public')->delete($request->user()->profile_photo_path);
+            if ($request->user()->image) {
+                Storage::disk('public')->delete($request->user()->image);
             }
             
             // Guardar la nueva imagen
             $path = $request->file('image')->store('avatarImages', 'public');
-            $request->user()->profile_photo_path = $path;
+            $request->user()->image = $path;
         }
 
         $request->user()->save();

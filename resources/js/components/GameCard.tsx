@@ -42,6 +42,7 @@ export default function GameCard({ game, onSave }: GameCardProps) {
 
     // Prevenir que los clics en botones propaguen al contenedor
     const handleButtonClick = (e: React.MouseEvent) => {
+        e.preventDefault();
         e.stopPropagation();
     };
 
@@ -49,7 +50,7 @@ export default function GameCard({ game, onSave }: GameCardProps) {
         <Link href={`/games/${game.id}`} className="block">
             <div className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800">
                 {/* Puntuación Metacritic con colores según el valor */}
-                {game.metacritic > 0 && (
+                {game.metacritic !== undefined && game.metacritic > 0 && (
                     <div 
                         className={`absolute top-2 right-2 z-10 rounded px-2 py-1 font-bold text-sm ${
                             game.metacritic >= 75 ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 
@@ -92,7 +93,7 @@ export default function GameCard({ game, onSave }: GameCardProps) {
                             }}
                             className="w-full bg-violet-600 text-white hover:bg-violet-700" // Añadimos clases para el color violeta
                         >
-                            {game.saved_by_user ? 'En tu biblioteca' : 'Añadir a Biblioteca'}
+                            {game.saved_by_user ? 'En tu biblioteca' : 'Añadir a la Biblioteca'}
                         </Button>                        
                         
                     </div>

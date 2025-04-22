@@ -3,7 +3,8 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Settings, Star, Trash2, UserMinus, UserPlus, Users } from 'lucide-react';
+import { Settings, Star, UserMinus, UserPlus, Users } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,13 +55,15 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                     <div className="mb-6 flex items-center justify-between">
                         <div className="flex items-center">
                             <div className="mr-4 h-16 w-16 overflow-hidden rounded-full">
+                              <Avatar className="h-16 w-16">
                                 {user.image ? (
-                                    <img src={`/storage/${user.image}`} alt={`${user.name} avatar`} className="h-full w-full object-cover" />
+                                     <AvatarImage src={`/storage/${user.image}`} alt={`${user.name} avatar`} />
                                 ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </div>
+                                   <AvatarFallback className="bg-primary/10 text-primary">
+                                   {user?.name?.charAt(0).toUpperCase()}
+                               </AvatarFallback>
                                 )}
+                               </Avatar>
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold">Perfil de {user.name}</h1>
@@ -83,7 +86,7 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                     className={`flex items-center rounded-lg px-4 py-2 transition-colors ${
                                         user.is_followed_by_auth_user
                                             ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                                            : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+                                            : 'bg-violet-100 text-violet-600 hover:bg-violet-200'
                                     }`}
                                 >
                                     {user.is_followed_by_auth_user ? (
@@ -122,9 +125,10 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                         {isCurrentUser ? 'Mis Juegos' : `Juegos de ${user.name}`}
                     </h2>
 
-                    {user.games && user.games.length > 0 ? (
+                    {user.games && user.games.length > 0 ? (                         
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {user.games.map((game) => (
+                            {user.games.map((game) => (   
+                              <Link href={`/games/${game.id}`} className="block">                          
                                 <div
                                     key={game.id}
                                     className="relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 dark:bg-gray-800"
@@ -171,20 +175,10 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                                 <span className="ml-2 text-sm text-gray-500">({game.rating}/5)</span>
                                             </div>
                                         )}
-
-                                        <div className="mt-2 flex items-center justify-between">
-                                            {isCurrentUser && (
-                                                <button
-                                                    onClick={() => handleDeleteGame(game.id)}
-                                                    className="flex items-center rounded bg-red-50 px-3 py-1 text-sm text-red-500 transition-colors hover:bg-red-100 hover:text-red-700 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                                >
-                                                    <Trash2 size={16} className="mr-1" />
-                                                    Eliminar
-                                                </button>
-                                            )}
-                                        </div>
+                                        
                                     </div>
                                 </div>
+                                </Link> 
                             ))}
                         </div>
                     ) : (

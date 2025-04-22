@@ -127,16 +127,7 @@ export default function Messages() {
         }
     };
 
-    const handleDeleteMessage = async (messageId: number) => {
-        if (!confirm('¿Estás seguro de que deseas eliminar este mensaje?')) return;
-        
-        try {
-            await axios.delete(`/messages/${messageId}`);
-            setMessages(messages.filter(msg => msg.id !== messageId));
-        } catch (error) {
-            console.error('Error al eliminar el mensaje:', error);
-        }
-    };
+  
 
     const filteredUsers = allUsers.filter(user => 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -206,7 +197,7 @@ export default function Messages() {
                                     <div 
                                         key={contact.id} 
                                         className={`p-4 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center ${
-                                            selectedContact?.id === contact.id ? 'bg-blue-50 dark:bg-blue-900' : ''
+                                            selectedContact?.id === contact.id ? 'bg-violet-50 dark:bg-violet-900' : ''
                                         }`}
                                         onClick={() => setSelectedContact(contact)}
                                     >
@@ -251,17 +242,8 @@ export default function Messages() {
                                                 {message.message}
                                                 <div className="text-xs text-right opacity-70">
                                                     {new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                                </div>
-                                                
-                                                {message.transmitter_id === currentUser.id && (
-                                                    <button 
-                                                        onClick={() => handleDeleteMessage(message.id)}
-                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        title="Eliminar mensaje"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
-                                                )}
+                                                </div>                                                
+                                             
                                             </div>
                                         ))
                                     ) : (
