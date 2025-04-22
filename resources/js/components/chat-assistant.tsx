@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import OpenAI from "openai";
 
 import { 
     Tooltip, 
@@ -105,19 +106,22 @@ export default function ChatAssistant() {
     setUserInput('');
     setIsLoading(true);
 
-    try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-               "Authorization": "Bearer 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",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "google/gemma-3-4b-it:free",
-                messages: [
-                    {
-                        role: "system",
-                        content: `Eres gamelive, un asistente avanzado especializado en videojuegos con conocimiento experto sobre:
+    try {      
+        const token ="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";
+        const endpoint = "https://models.inference.ai.azure.com";
+        const modelName = "gpt-4o-mini";
+
+        const client = new OpenAI({ 
+            baseURL: endpoint, 
+            apiKey: token,
+            dangerouslyAllowBrowser: true 
+        });
+
+        const response = await client.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: `Eres gamelive, un asistente avanzado especializado en videojuegos con conocimiento experto sobre:
 1. Historia de los videojuegos y evolución de consolas
 2. Géneros, mecánicas y diseño de juegos
 3. Juegos populares, clásicos y títulos independientes
@@ -136,23 +140,25 @@ Formateo:
 
 Si no conoces la respuesta, reconócelo honestamente y ofrece alternativas relacionadas. Si el usuario solicita información no relacionada con videojuegos, responde que estás especializado en videojuegos pero tratarás de ayudar.
 
-Fecha actual: 15 de abril de 2025.`
-                    },
-                    ...messages.map(msg => ({
-                        role: msg.role,
-                        content: msg.content
-                    })),
-                    {
-                        role: "user",
-                        content: userInput
-                    }
-                ]
-            })
+Fecha actual: ${new Date().toLocaleDateString('es-ES')}`
+                },
+                ...messages.map(msg => ({
+                    role: msg.role,
+                    content: msg.content
+                })),
+                {
+                    role: "user",
+                    content: userInput
+                }
+            ],
+            model: modelName,
+            temperature: 1.0,
+            max_tokens: 1000,
+            top_p: 1.0
         });
 
-        const data = await response.json();
-        const assistantMessage = data.choices[0].message.content;
-        setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+        const assistantMessage = response.choices[0].message.content;
+        setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage || 'No pude generar una respuesta.' }]);
     } catch (error) {
         console.error('Error:', error);
         setMessages(prev => [...prev, { 

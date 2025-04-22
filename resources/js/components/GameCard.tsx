@@ -90,8 +90,7 @@ export default function GameCard({ game, onSave }: GameCardProps) {
                                 handleButtonClick(e);
                                 onSave(game.id);
                             }}
-                            variant="outline"
-                            className="w-full"
+                            className="w-full bg-violet-600 text-white hover:bg-violet-700" // Añadimos clases para el color violeta
                         >
                             {game.saved_by_user ? 'En tu biblioteca' : 'Añadir a Biblioteca'}
                         </Button>                        

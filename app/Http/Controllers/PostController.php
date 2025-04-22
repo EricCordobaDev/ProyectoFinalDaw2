@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
-use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +43,7 @@ class PostController extends Controller
         $post = new Post();
         $post->usuario_id = Auth::id();
         $post->content = $request->content;
-
+        
         // Procesar la imagen solo si se ha subido una imagen
         if ($request->hasFile('image')) {
           $image = $request->file('image');
@@ -50,7 +51,7 @@ class PostController extends Controller
           $nombreImagen = time() . '.' . $image->getClientOriginalExtension();
           // Guardar la imagen en el disco 'public' dentro de la carpeta 'images'
           $post->image = $image->storeAs('postImages', $nombreImagen, 'public');
-        }
+     }
         
         $post->save();
 
@@ -61,28 +62,6 @@ class PostController extends Controller
         return redirect()->back();
     }  
 
-    /**
-     * Display the specified resource (post).
-     */
-    public function show(Post $post)
-    {
-        $user = Auth::user();
-        
-        // Cargar el post con su usuario y comentarios (ordenados por fecha)
-        $post->load(['user']);
-        $post->liked_by_user = $post->isLikedBy($user);
-        
-        // Cargar comentarios con sus autores
-        $comments = Comment::where('post_id', $post->id)
-            ->with('user')
-            ->orderByDesc('created_at')
-            ->get();
-            
-        return Inertia::render('posts/show', [
-            'post' => $post,
-            'comments' => $comments
-        ]);
-    }  
     
 
     /**

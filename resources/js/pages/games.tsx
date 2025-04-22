@@ -6,6 +6,7 @@ import { Search, Star as  X } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import GameCard from '@/components/GameCard';
+import { Input } from '@/components/ui/input';
 
 interface Game {
     id: number;
@@ -173,15 +174,17 @@ export default function Games({
                 {/* Buscador */}
                 <div className="mb-6">
                     <div className="relative">
-                        <input
+                        <Input
                             type="text"
                             placeholder="Buscar videojuegos..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                            // Modificamos las clases para el estilo violeta
+                            className="w-full rounded-lg border border-transparent py-2 pl-10 pr-4 " 
                         />
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <Search className="h-5 w-5 text-gray-400" />
+                            {/* Ajustamos el color del icono para que contraste */}
+                            <Search className="h-5 w-5 text-violet-200" /> 
                         </div>
                     </div>
                 </div>

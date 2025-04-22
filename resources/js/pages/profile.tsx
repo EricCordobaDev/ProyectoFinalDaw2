@@ -100,16 +100,16 @@ export default function Profile({ user, isCurrentUser }: ProfileProps) {
                                 </button>
                             )}
                             {isCurrentUser && (
-                                <Link
-                                    className="flex items-center rounded-lg bg-gray-100 px-4 py-2 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                    href={route('profile.edit')}
-                                    as="button"
-                                    prefetch
-                                    onClick={cleanup}
-                                >
-                                    <Settings className="mr-2" size={18} />
-                                    Configuración
-                                </Link>
+                              <Link
+                                   className="flex items-center rounded-lg bg-violet-600 px-4 py-2 text-white transition-colors hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-800"
+                                   href={route('profile.edit')}
+                                   as="button"
+                                   prefetch
+                                   onClick={cleanup}
+                              >
+                                   <Settings className="mr-2" size={18} />
+                                   Configuración
+                              </Link>
                             )}
                         </div>
                     </div>
