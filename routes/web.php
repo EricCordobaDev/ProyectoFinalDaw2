@@ -40,6 +40,11 @@ Route::middleware(['auth'])->group(function () {
         ]);
     })->name('dashboard');
     
+    // Ruta para el manual de usuario
+    Route::get('/manual', function () {
+        return Inertia::render('Manual');
+    })->name('manual');
+
     // Rutas de mensajes
     Route::prefix('messages')->group(function () {
         Route::get('/', [MessageController::class, 'index'])->name('messages.index');

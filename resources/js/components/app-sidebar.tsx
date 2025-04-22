@@ -3,31 +3,36 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Gamepad2, Home, LogOut, MessageSquare, Newspaper } from 'lucide-react';
+import { Gamepad2, Home, LogOut, MessageSquare, Newspaper, BookOpen } from 'lucide-react';
 import AppLogo from './app-logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { usePage } from '@inertiajs/react';
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Inicio',
-        url: '/dashboard',
-        icon: Home,
-    },
-    {
-        title: 'Videojuegos',
-        url: '/games',
-        icon: Gamepad2,
-    },
-    {
-        title: 'Mensajes',
-        url: '/messages',
-        icon: MessageSquare,
-    },
+     {
+          title: 'Inicio',
+          url: '/dashboard',
+          icon: Home,
+     },
+     {
+          title: 'Videojuegos',
+          url: '/games',
+          icon: Gamepad2,
+     },
+     {
+          title: 'Mensajes',
+          url: '/messages',
+          icon: MessageSquare,
+     },
      {
           title: 'Noticias',
           url: '/news',
           icon: Newspaper,
+     },
+     {
+          title: 'Manual',
+          url: '/manual',
+          icon: BookOpen,  
      },
 ];
 
