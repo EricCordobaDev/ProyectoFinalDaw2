@@ -10,7 +10,6 @@ import {
   ChevronRight,
   Menu,
   X,
-  Star,
   Gamepad2,
   Globe,
   Shield,
@@ -62,44 +61,7 @@ export default function Welcome() {
         "Nuestra plataforma utiliza un sistema de emparejamiento inteligente que te conecta con jugadores que comparten tus intereses, nivel de habilidad y horarios de juego preferidos.",
     },
   ]
-
-  // Testimonials data
-  const testimonials = [
-    {
-      name: "Carlos Rodríguez",
-      role: "Jugador de Valorant",
-      content:
-        "Gracias a GameLive encontré un equipo increíble para competir en torneos. La comunidad es fantástica y muy acogedora.",
-      avatar: "/placeholder.svg?height=80&width=80",
-      rating: 5,
-    },
-    {
-      name: "Laura Martínez",
-      role: "Streamer",
-      content:
-        "Como creadora de contenido, GameLive me ha ayudado a conectar con mi audiencia de una forma más personal y directa.",
-      avatar: "/placeholder.svg?height=80&width=80",
-      rating: 5,
-    },
-    {
-      name: "Miguel Sánchez",
-      role: "Jugador casual",
-      content:
-        "Aunque no juego competitivamente, he encontrado amigos geniales con los que jugar regularmente. ¡Muy recomendado!",
-      avatar: "/placeholder.svg?height=80&width=80",
-      rating: 4,
-    },
-  ]
-
-  // Game categories
-  const gameCategories = [
-    { id: "all", name: "Todos" },
-    { id: "fps", name: "FPS" },
-    { id: "moba", name: "MOBA" },
-    { id: "rpg", name: "RPG" },
-    { id: "battle-royale", name: "Battle Royale" },
-  ]
-
+ 
   // Popular games
   const popularGames = [
     { id: 1, name: "Valorant", category: "fps", image: "/placeholder.svg?height=200&width=300" },
@@ -277,7 +239,7 @@ export default function Welcome() {
               <div className="absolute inset-0 bg-grid-pattern" />
             </div>
 
-            <div className="container px-4 md:px-6">
+            <div className=" px-4 md:px-6">
               <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                 <div
                   className="flex flex-col justify-center space-y-4"                  
@@ -308,18 +270,7 @@ export default function Welcome() {
                     </Link>
                   </div>                 
                 </div>
-                <div                 
-                  className="relative"
-                >
-                  <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary to-primary/50 opacity-70 blur-sm"></div>
-                  <img
-                    src="/img/gaming-hero.jpg"
-                    alt="Ilustración de comunidad gaming"
-                    className="relative mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
-                    width={550}
-                    height={550}
-                  />
-                </div>
+               
               </div>
             </div>
           </section>
