@@ -97,16 +97,7 @@ export default function Welcome() {
             <nav className="hidden md:flex items-center gap-6">
               <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">
                 Características
-              </Link>
-              <Link href="#games" className="text-sm font-medium hover:text-primary transition-colors">
-                Juegos
-              </Link>
-              <Link href="#community" className="text-sm font-medium hover:text-primary transition-colors">
-                Comunidad
-              </Link>
-              <Link href="#testimonials" className="text-sm font-medium hover:text-primary transition-colors">
-                Testimonios
-              </Link>
+              </Link>             
               <Link href="#faq" className="text-sm font-medium hover:text-primary transition-colors">
                 FAQ
               </Link>
