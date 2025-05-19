@@ -1,5 +1,3 @@
-
-import AppearanceToggleDropdown from "@/components/appearance-dropdown"
 import type { SharedData } from "@/types"
 import { Head, Link, usePage } from "@inertiajs/react"
 import {
@@ -20,7 +18,6 @@ export default function Welcome() {
   const { auth } = usePage<SharedData>().props
   const currentYear = new Date().getFullYear()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("all")
   
 
   // Mobile menu toggle
@@ -49,31 +46,8 @@ export default function Welcome() {
       question: "¿Es gratis registrarse?",
       answer:
         "Sí, crear una cuenta en GameLive es completamente gratuito. Ofrecemos funciones premium opcionales, pero todas las características principales están disponibles sin costo.",
-    },
-    {
-      question: "¿Qué plataformas de juego son compatibles?",
-      answer:
-        "GameLive es compatible con todas las plataformas de juego, incluyendo PC, PlayStation, Xbox, Nintendo Switch y dispositivos móviles.",
-    },
-    {
-      question: "¿Cómo puedo encontrar jugadores con intereses similares?",
-      answer:
-        "Nuestra plataforma utiliza un sistema de emparejamiento inteligente que te conecta con jugadores que comparten tus intereses, nivel de habilidad y horarios de juego preferidos.",
-    },
+    },   
   ]
- 
-  // Popular games
-  const popularGames = [
-    { id: 1, name: "Valorant", category: "fps", image: "/placeholder.svg?height=200&width=300" },
-    { id: 2, name: "League of Legends", category: "moba", image: "/placeholder.svg?height=200&width=300" },
-    { id: 3, name: "Fortnite", category: "battle-royale", image: "/placeholder.svg?height=200&width=300" },
-    { id: 4, name: "Elden Ring", category: "rpg", image: "/placeholder.svg?height=200&width=300" },
-    { id: 5, name: "Counter-Strike 2", category: "fps", image: "/placeholder.svg?height=200&width=300" },
-    { id: 6, name: "World of Warcraft", category: "rpg", image: "/placeholder.svg?height=200&width=300" },
-  ]
-
-  // Filter games by category
-  const filteredGames = activeTab === "all" ? popularGames : popularGames.filter((game) => game.category === activeTab)
 
   return (
     <>
@@ -103,8 +77,7 @@ export default function Welcome() {
               </Link>
             </nav>
 
-            <div className="flex items-center gap-4">
-              <AppearanceToggleDropdown />
+            <div className="flex items-center gap-4">          
 
               {/* Desktop Auth Buttons */}
               <div className="hidden sm:flex gap-2">
@@ -158,28 +131,7 @@ export default function Welcome() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Características
-                </Link>
-                <Link
-                  href="#games"
-                  className="text-sm font-medium hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Juegos
-                </Link>
-                <Link
-                  href="#community"
-                  className="text-sm font-medium hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Comunidad
-                </Link>
-                <Link
-                  href="#testimonials"
-                  className="text-sm font-medium hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Testimonios
-                </Link>
+                </Link>               
                 <Link
                   href="#faq"
                   className="text-sm font-medium hover:text-primary"
@@ -404,41 +356,7 @@ export default function Welcome() {
               </div>
             </div>
           </section>
-
-          {/* CTA Section */}
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
-            <div className="container px-4 md:px-6">
-              <div
-                className="flex flex-col items-center justify-center space-y-4 text-center"
-           
-              >
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-                    ¿Listo para mejorar tu experiencia de juego?
-                  </h2>
-                  <p className="max-w-[600px] md:text-xl/relaxed">
-                    Únete a GameLive hoy y conecta con jugadores de todo el mundo.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <div>
-                    <Link
-                      href={route("register")}
-                      className="inline-flex h-10 items-center justify-center rounded-md bg-background px-8 text-sm font-medium text-primary shadow hover:bg-accent transition-colors"
-                    >
-                      Regístrate gratis <ChevronRight className="h-4 w-4 ml-1" />
-                    </Link>
-                  </div>
-                  <Link
-                    href="#features"
-                    className="inline-flex h-10 items-center justify-center rounded-md border border-primary-foreground bg-transparent px-8 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary-foreground hover:text-primary transition-colors"
-                  >
-                    Más información
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
+     
         </main>
 
         <footer className="w-full border-t bg-background">

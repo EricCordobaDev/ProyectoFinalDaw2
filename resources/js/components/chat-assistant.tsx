@@ -107,7 +107,7 @@ export default function ChatAssistant() {
     setIsLoading(true);
 
     try {      
-        const token = "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";        
+        const token = "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";        
         const endpoint = "https://models.inference.ai.azure.com";
         const modelName = "gpt-4o-mini";
 
