@@ -21,96 +21,129 @@ export default function Manual() {
                 <Card className="border-none shadow-sm bg-gradient-to-br from-background to-muted/40">
                     <CardHeader>
                         <CardTitle>Manual de Usuario</CardTitle>
-                        <CardDescription>Guía completa para utilizar la aplicación.</CardDescription>
+                        <CardDescription>Guía práctica para aprovechar todas las funcionalidades de la aplicación.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Accordion type="single" collapsible className="w-full">
+
+                            {/* Sección: Uso básico */}
+                            <h3 className="mt-4 mb-2 text-lg font-semibold">Uso básico</h3>
                             <AccordionItem value="item-1">
-                                <AccordionTrigger>Puesta en marcha</AccordionTrigger>
+                                <AccordionTrigger>Inicio de la aplicación</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Aquí se explicará cómo iniciar la aplicación, requisitos previos, registro e inicio de sesión.</p>
-                                    <h4 className="font-semibold mt-2">Requisitos previos:</h4>
+                                    <p>Descubre cómo preparar todo lo necesario e iniciar sesión en la plataforma.</p>
+                                    <h4 className="font-semibold mt-2">Requisitos previos</h4>
                                     <ul className="list-disc pl-5">
-                                        <li>Conexión a internet estable.</li>
-                                        <li>Navegador actualizado (Google Chrome, Firefox, etc.).</li>
-                                        <li>Cuenta de usuario registrada.</li>
+                                        <li>Conexión a Internet estable.</li>
+                                        <li>Navegador web actualizado (Chrome, Firefox, Edge).</li>
+                                        <li>Cuenta de usuario activa.</li>
                                     </ul>
-                                    <h4 className="font-semibold mt-2">Pasos para iniciar:</h4>
+                                    <h4 className="font-semibold mt-2">Pasos iniciales</h4>
                                     <ol className="list-decimal pl-5">
-                                        <li>Accede a la URL de la aplicación.</li>
-                                        <li>Haz clic en "Registrarse" si no tienes cuenta, o "Iniciar sesión" si ya estás registrado.</li>
-                                        <li>Introduce tus credenciales y accede al sistema.</li>
+                                        <li>Abre la URL de la aplicación en tu navegador.</li>
+                                        <li>Selecciona "Registrarse" o "Iniciar sesión".</li>
+                                        <li>Introduce tus datos y accede al sistema.</li>
                                     </ol>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-2">
-                                <AccordionTrigger>Manejo de los menús o acceso a cada módulo</AccordionTrigger>
+                                <AccordionTrigger>Navegación y módulos</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Descripción de la interfaz principal, la barra de navegación, y cómo acceder a las diferentes secciones como el Dashboard, Perfil, Juegos, Mensajes, etc.</p>
-                                    <h4 className="font-semibold mt-2">Perfil de Usuario Registrado:</h4>
+                                    <p>Descripción de la barra de navegación y cómo acceder a cada sección principal.</p>
+                                    <h4 className="font-semibold mt-2">Secciones disponibles</h4>
                                     <ul className="list-disc pl-5">
-                                        <li>Dashboard: Feed principal con publicaciones.</li>
-                                        <li>Perfil: Ver y editar tu información, ver tus juegos guardados, seguidores y seguidos.</li>
-                                        <li>Juegos: Explorar el catálogo de juegos, ver detalles y guardar juegos.</li>
-                                        <li>Mensajes: Chatear con otros usuarios.</li>
-                                        <li>Noticias: Ver las últimas noticias sobre videojuegos.</li>
-                                        <li>Configuración: Ajustes de la cuenta.</li>
+                                        <li><strong>Dashboard:</strong> Resumen de actividad y últimas publicaciones.</li>
+                                        <li><strong>Perfil:</strong> Edita tu información, consulta juegos guardados y estadísticas.</li>
+                                        <li><strong>Juegos:</strong> Explora el catálogo, ve detalles y guarda tus favoritos.</li>
+                                        <li><strong>Mensajes:</strong> Chat en tiempo real con otros usuarios.</li>
+                                        <li><strong>Noticias:</strong> Actualizaciones y novedades sobre videojuegos.</li>
+                                        <li><strong>Configuración:</strong> Ajustes de cuenta y preferencias.</li>
                                     </ul>
-                                    
-                                                                  
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="item-3">
-                                <AccordionTrigger>Gestión periódica del sistema</AccordionTrigger>
+                            <AccordionItem value="item-7">
+                                <AccordionTrigger>Agregar juegos al perfil</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Tareas recomendadas para mantener el sistema funcionando correctamente (principalmente para administradores).</p>
+                                    <p>Aprende a buscar y guardar nuevos títulos en tu biblioteca personal.</p>
+                                    <ol className="list-decimal pl-5">
+                                        <li>Ve al módulo <strong>Juegos</strong> en la navegación lateral.</li>
+                                        <li>Utiliza la barra de búsqueda o explora el catálogo.</li>
+                                        <li>En la tarjeta de cada juego, haz clic en <em>Guardar</em> o <em>Agregar</em>.</li>
+                                        <li>El juego aparecerá inmediatamente en <strong>Mis Juegos</strong> de tu perfil.</li>
+                                    </ol>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-8">
+                                <AccordionTrigger>Cómo hacer una review de un juego</AccordionTrigger>
+                                <AccordionContent>
+                                    <p>Guía paso a paso para calificar y comentar un juego.</p>
                                     <ul className="list-disc pl-5">
-                                        <li>Revisión de logs: Verifica errores y eventos importantes en el sistema.</li>
-                                        <li>Actualización de dependencias: Mantén el software actualizado para evitar vulnerabilidades.</li>
-                                        <li>Monitorización del rendimiento: Usa herramientas como Google Analytics o servicios de monitoreo.</li>
-                                        <li>Gestión de usuarios inactivos: Elimina o desactiva cuentas que no se usen.</li>
+                                        <li>Accede a la página de detalles del juego desde <strong>Juegos</strong> o tu perfil.</li>
+                                        <li>Desplázate hasta la sección de <strong>Reviews</strong>.</li>
+                                        <li>Si ya has jugado, verás la opción <em>Escribe tu review</em> (o <em>Editar tu review</em>).</li>
+                                        <li>Selecciona la cantidad de estrellas que deseas otorgar.</li>
+                                        <li>Escribe tu comentario en el campo proporcionado (opcional).</li>
+                                        <li>Haz clic en <em>Publicar review</em> para compartir tu opinión con la comunidad.</li>
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {/* Sección: Administración */}
+                            <h3 className="mt-6 mb-2 text-lg font-semibold">Administración</h3>
+                            <AccordionItem value="item-3">
+                                <AccordionTrigger>Mantenimiento del sistema</AccordionTrigger>
+                                <AccordionContent>
+                                    <p>Buenas prácticas para mantener la plataforma estable y segura.</p>
+                                    <ul className="list-disc pl-5">
+                                        <li>Revisar logs periódicamente para identificar errores.</li>
+                                        <li>Actualizar dependencias y parches de seguridad.</li>
+                                        <li>Monitorizar rendimiento con herramientas externas.</li>
+                                        <li>Gestionar usuarios inactivos o con comportamientos sospechosos.</li>
                                     </ul>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-4">
-                                <AccordionTrigger>Realización de copias de seguridad</AccordionTrigger>
+                                <AccordionTrigger>Copias de seguridad</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Instrucciones sobre cómo realizar copias de seguridad de la base de datos y los archivos importantes de la aplicación.</p>
-                                    <h4 className="font-semibold mt-2">Pasos para realizar una copia de seguridad:</h4>
+                                    <p>Cómo exportar datos y archivos para proteger tu información.</p>
+                                    <h4 className="font-semibold mt-2">Procedimiento recomendado</h4>
                                     <ol className="list-decimal pl-5">
                                         <li>Accede al panel de administración del servidor.</li>
-                                        <li>Exporta la base de datos en formato SQL (por ejemplo, `proyecto_final.sql`).</li>
-                                        <li>Descarga el directorio `storage/app` y guárdalo en un lugar seguro.</li>
-                                        <li>Guarda las copias en un almacenamiento externo o en la nube.</li>
+                                        <li>Exporta la base de datos en formato SQL.</li>
+                                        <li>Descarga el directorio <code>storage/app</code>.</li>
+                                        <li>Almacena las copias en un soporte externo o en la nube.</li>
                                     </ol>
-                                    <p>Frecuencia recomendada: Semanal o antes de realizar actualizaciones importantes.</p>
+                                    <p className="mt-2">Frecuencia sugerida: semanal o antes de grandes actualizaciones.</p>
                                 </AccordionContent>
                             </AccordionItem>
+
+                            {/* Sección: Soporte y ayuda */}
+                            <h3 className="mt-6 mb-2 text-lg font-semibold">Soporte y ayuda</h3>
                             <AccordionItem value="item-5">
-                                <AccordionTrigger>Mensajes de error</AccordionTrigger>
+                                <AccordionTrigger>Errores comunes y soluciones</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Listado de posibles mensajes de error comunes y sus soluciones o significados.</p>
+                                    <p>Listado de mensajes de error frecuentes y cómo resolverlos.</p>
                                     <ul className="list-disc pl-5">
-                                        <li>Error 404: Página no encontrada. Verifica la URL.</li>
-                                        <li>Error 500: Error interno del servidor. Contacta al administrador.</li>
-                                        <li>Error de validación: Revisa los campos del formulario marcados en rojo.</li>
-                                        <li>Error de autenticación: Credenciales incorrectas. Intenta nuevamente o restablece tu contraseña.</li>
-                                        <li>Error de conexión: Verifica tu conexión a internet o contacta al soporte técnico.</li>
+                                        <li><strong>404 - No encontrado:</strong> Verifica la URL y rutas configuradas.</li>
+                                        <li><strong>500 - Error interno:</strong> Consulta los logs del servidor.</li>
+                                        <li><strong>Validación:</strong> Corrige los campos marcados en rojo.</li>
+                                        <li><strong>Autenticación:</strong> Revisa tus credenciales o restablece la contraseña.</li>
+                                        <li><strong>Conexión:</strong> Comprueba tu conexión a Internet.</li>
                                     </ul>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-6">
                                 <AccordionTrigger>Glosario de términos</AccordionTrigger>
                                 <AccordionContent>
-                                    <p>Definiciones de términos específicos utilizados en la aplicación.</p>
+                                    <p>Definiciones clave para familiarizarte con la jerga de la plataforma.</p>
                                     <ul className="list-disc pl-5">
-                                        <li><strong>Post:</strong> Publicación realizada por un usuario en el feed principal.</li>
-                                        <li><strong>Review:</strong> Reseña u opinión sobre un videojuego.</li>
-                                        <li><strong>Feed:</strong> Flujo de publicaciones en el dashboard.</li>
-                                        <li><strong>Seguidor/Following:</strong> Usuarios que sigues o te siguen.</li>
-                                        <li><strong>Dashboard:</strong> Página principal con un resumen de actividades.</li>
-                                        <li><strong>Notificaciones:</strong> Alertas sobre eventos importantes en la aplicación.</li>
-                                        <li><strong>Backup:</strong> Copia de seguridad de datos importantes.</li>
+                                        <li><strong>Post:</strong> Publicación de un usuario en el feed.</li>
+                                        <li><strong>Review:</strong> Reseña de un videojuego.</li>
+                                        <li><strong>Feed:</strong> Flujo de contenido en el Dashboard.</li>
+                                        <li><strong>Seguidor/Seguido:</strong> Conexiones entre usuarios.</li>
+                                        <li><strong>Dashboard:</strong> Vista principal con resumen de actividades.</li>
+                                        <li><strong>Notificaciones:</strong> Alertas sobre eventos recientes.</li>
+                                        <li><strong>Backup:</strong> Copia de seguridad de datos.</li>
                                     </ul>
                                 </AccordionContent>
                             </AccordionItem>

@@ -19,6 +19,11 @@ Route::get('games', [VideojuegoController::class, 'mostrarVideojuegos'])->name('
 Route::get('games/{game}', [VideojuegoController::class, 'show'])->name('games.show');
 Route::get('profile', [UserController::class, 'index'])->name('profile');
 
+// Ruta pública para mostrar un HTML
+Route::get('/despliegue', function () {
+    return response()->file(base_path('public/despliegue.html'));
+})->name('despliegue');
+
 // Rutas para reviews (acceso público para ver)
 Route::get('games/{game}/reviews', [ReviewController::class, 'index'])->name('games.reviews.index');
 
